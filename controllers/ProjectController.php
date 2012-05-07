@@ -136,7 +136,7 @@ include CORE.'cli.php';";
 				."\n\t'/:controller(/:action/*)?'=>array('!::!'),\n);");
 			file_put_contents($dir.'routes-langs.php',"<?"."php return NULL;");
 			file_put_contents($dir.'cookies.php',"<?"."php return array();");
-			file_put_contents($dir.'secure.php',"<?"."php return array();");
+			file_put_contents($dir.'secure.php',"<?"."php return array(\n\t'url_login'=>'/site/login', 'url_redirect'=>'/',\n\t\n);");
 			file_put_contents($dir.'enhance.php',"<?"."php return array(\n\t'base'=>array('i18n'),\n\t'includes'=>array(\n\t\t\n\t)\n);");
 			
 			mkdir($dir=$projectPath.'controllers/');
