@@ -148,19 +148,19 @@ include CORE.'cli.php';";
 			mkdir($dir=$projectPath.'views/');
 			mkdir($dir2=$dir.'Site/');
 			file_put_contents($dir2.'index.php',"<?"."php new AjaxContentView() ?".">");
-			mkdir($dir2=$dir.'layouts/');
-			file_put_contents($dir2.'base.php',"<!DOCTYPE html>\n<html>\n\t<head>\n\t\t<meta charset=\"UTF-8\">\n\t\t<title>".'{$layout_title}'."</title>"
+			mkdir($dir=$projectPath.'viewLayouts/');
+			file_put_contents($dir.'base.php',"<!DOCTYPE html>\n<html>\n\t<head>\n\t\t<meta charset=\"UTF-8\">\n\t\t<title>".'{$layout_title}'."</title>"
 				."\n\t\t<?"."php HHtml::cssLink() ?".">\n\t</head>\n\t<body>"
 				."\n\t\t".'{=$layout_content}'
 				."\n\t</body>"."\n</html>");
 			
-			file_put_contents($dir2.'page.php',"<?php new AjaxBaseView(".'$layout_title'.") ?>"
+			file_put_contents($dir.'page.php',"<?php new AjaxBaseView(".'$layout_title'.") ?>"
 				."\n<header>\n\t<div id=\"logo\">".$projectName."</div>\n\t{menuTop 'startsWith':true"
 				."\n\t\t_tC('Home'):false,\n"."\t\t}"
 				."\n\t\t<br class=\"clear\"/>"
 				."\n</header>\n".'{=$layout_content}'
 				."\n<footer>Version du <b><? HHtml::enhanceDate() ?></b> | <? HHtml::powered() ?></footer>");
-			file_put_contents($dir2.'default.php',"<?php new AjaxPageView(".'$layout_title'.") ?>"
+			file_put_contents($dir.'default.php',"<?php new AjaxPageView(".'$layout_title'.") ?>"
 				."\n<div class=\"variable\">"
 				."\n\t<h1>".'{$layout_title}'."</h1>"
 				."\n\t".'{=$layout_content}'
