@@ -97,7 +97,7 @@ include CORE.'cli.php';");
 		foreach($jsFilenames as $jsfilename){
 			if(file_exists($filename=$projectPath.'web/js/'.$jsfilename)){
 				$jsFile=file($filename);
-				$line0="var basedir='".$this->base_url."',webdir=basedir+'web/',staticUrl=webdir+'".date('mdH')."/',imgdir=webdir+'img/',jsdir=webdir+'js/';\n";
+				$line0="(function(window,document,Object,Array,Math,undefined){window.basedir='".$this->base_url."';window.webdir=basedir+'web/';window.staticUrl=webdir+'".date('mdH')."/';window.imgdir=webdir+'img/';window.jsdir=webdir+'js/';\n";
 				if($jsFile[0]!=$line0){
 					$jsFile[0]=$line0;
 					file_put_contents($filename,implode('',$jsFile));
