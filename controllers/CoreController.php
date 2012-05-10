@@ -64,7 +64,7 @@ class CoreController extends AController{
 		
 		file_put_contents(dirname(CORE).'/src/i18n/langs/'.$lang.'.php','<?php return '.UPhp::exportCode($data).';');
 		
-		$content="var i18nc={";
+		$content="window.i18nc={";
 		foreach($data as $s=>$t)
 			$content.=UPhp::exportString($s).':'.UPhp::exportString($t).',';
 		file_put_contents(dirname(CORE).'/src/includes/js/langs/core-'.$lang.'.js',substr($content,0,-1)."};");
