@@ -17,4 +17,9 @@ class DevtoolsController extends Controller{
 	function pt_px(){
 		self::render();
 	}
+	
+	/** */
+	function jqueryui(){
+		self::render();
+	}
 }

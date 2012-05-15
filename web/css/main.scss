@@ -1,5 +1,7 @@
-@includeCore 'springbok-darkblue.css';
-@includeCore '_ajax.css';
+$PAGE_FIXED:true;
+@includeCore 'colors/simpleblue.scss';
+@includeCore 'default.scss';
+@includeCore 'base/ajax.scss';
 
 ul.devtools_colors{
 	list-style: none;

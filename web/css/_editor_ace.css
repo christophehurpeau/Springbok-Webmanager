@@ -8,4 +8,4 @@
 }
 
 @includeLib 'jquery.filetree.css';
-@includeCore 'springbok.contextmenu.css';
+@includeCore 'components/contextmenu';
