@@ -58,7 +58,7 @@ class Server extends SSqlModel{
 				$sc->insert();
 			}
 			
-			$options=array('simulation'=>$simulation,'exclude'=>array('.svn/','/enhance_def.php'),'ssh'=>$this->sshOptions());
+			$options=array('simulation'=>$simulation,'exclude'=>array('.svn/','/enhance_def.php','/pull.php','/enhance_cli.php','/enhance_v2.php'),'ssh'=>$this->sshOptions());
 			$res.=UExec::rsync(dirname(CORE).'/libs/',$this->core_dir.'/libs/',$options);
 			$res.=UExec::rsync(dirname(CORE).'/prod/',$this->core_dir.DS.$sc_path.DS,$options);
 		}else $res='This core is already up-to-date'.PHP_EOL;
