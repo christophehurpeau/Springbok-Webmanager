@@ -76,6 +76,7 @@ class Server extends SSqlModel{
 		if(!isset($versions[Springbok::VERSION]) || $force){
 			$resp->push('CORE VERSION IS NOT UP-TO-DATE ON SERVER');
 			$scPath=isset($versions[Springbok::VERSION]) ? $versions[Springbok::VERSION] : 'springbok-'.date('Y-m-d');
+			$versionsChanged=true;
 			
 			$updateVersion=false;
 			foreach($versions as $sbVersion=>$v)
@@ -84,6 +85,7 @@ class Server extends SSqlModel{
 					$versions[Springbok::VERSION]=$v;
 					unset($versions[$sbVersion]);
 				}
+			if(!$updateVersion) $versions[Springbok::VERSION]=array($scPath,array());
 			
 			$options=array('simulation'=>$simulation,'exclude'=>array('.svn/','/enhance_def.php','/pull.php','/enhance_cli.php','/enhance_v2.php'),'ssh'=>$sshOptions);
 			$resp->push("DEPLOY CORE: Libs\n".UExec::rsync(dirname(CORE).'/libs/',$this->core_dir.'/libs/',$options));
@@ -91,9 +93,11 @@ class Server extends SSqlModel{
 			
 			foreach($versions as &$v)
 				if(!empty($v[1]) && false!==($key=array_search($deployment->path,$v[1]))){
-					unset($v[1]);
+					unset($v[1][$key]);
 					$versionsChanged=true;
 				}
+			
+			$versions[Springbok::VERSION][1][]=$deployment->path;
 		}else{
 			$resp->push('This core is already up-to-date');
 			$scPath=$versions[Springbok::VERSION][0];
