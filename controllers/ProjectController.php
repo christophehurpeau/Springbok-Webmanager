@@ -216,87 +216,9 @@ include CORE.'cli.php';";
 		self::render();
 	}
 	
-	/** @ValidParams
-	 * id > @Required
-	 */
-	function deployments(int $id){
-		$project=Project::ById($id);
-		notFoundIfFalse($project);
-		self::mset($project);
-		self::set('deployments',Deployment::QAll()->byProject_id($id)->with('Server'));
-		self::set('servers',Server::findListName());
-		self::render();
-	}
 	
-	/** @ValidParams
-	 * deployment > @Valid('project_id','server_id','path')
-	 * deployment > @Required
-	 */
-	function deployment_add(Deployment $deployment){
-		$deployment->insert();
-		self::redirect('/project/deployments/'.$deployment->project_id);
-	}
 	
-	/** @ValidParams
-	 * id > @Required
-	 * deployment > @Valid('path','base_url')
-	 */
-	function deployment_edit(int $id,Deployment $deployment){
-		$existingDeployment=Deployment::ById($id)->with('Project');
-		notFoundIfFalse($existingDeployment);
-		if($deployment!==NULL){
-			$deployment->id=$id;
-			$deployment->update('path','base_url');
-			self::redirect('/project/deployments/'.$existingDeployment->project_id);
-		}
-		self::set_('deployment',$existingDeployment);
-		render();
-	}
 	
-	/** @ValidParams
-	* id > @Required
-	*/ function deployment_del(int $id){
-		$prjId=Deployment::findValueProject_idById($id);
-		notFoundIfFalse($prjId);
-		Deployment::deleteOneById($id);
-		redirect('/project/deployments/'.$prjId);
-	}
-	
-	/** @ValidParams
-	* id > @Required
-	*/ function deployment(int $id){
-		$deployment=Deployment::ById($id)->with('Project')->with('Server');
-		notFoundIfFalse($deployment);
-		self::mset($deployment);self::set_('project',$deployment->project);
-		self::render();
-	}
-	
-	/** @ValidParams @Post
-	* id > @Required
-	*/ function start_deployment(int $id){
-		$deployment=Deployment::ById($id)->with('Project')->with('Server');
-		notFoundIfFalse($deployment);
-		CSession::setFlash($deployment->start());
-		redirect('/project/deployment/'.$id);
-	}
-	/** @ValidParams @Post
-	* id > @Required
-	*/ function stop_deployment(int $id){
-		$deployment=Deployment::ById($id)->with('Project')->with('Server');
-		notFoundIfFalse($deployment);
-		CSession::setFlash($deployment->stop());
-		redirect('/project/deployment/'.$id);
-	}
-	
-	/** @ValidParams @Post
-	* id > @Required
-	*/ function do_deployment(int $id){
-		$deployment=Deployment::ById($id)->with('Project')->with('Server');
-		notFoundIfFalse($existingDeployment);
-		self::mset($deployment);self::set_('project',$deployment->project);
-		self::set('output',$deployment->doDeployment(self::$workspace->id));
-		self::render();
-	}
 	
 	/*
 	public function create_deployment(int $id){

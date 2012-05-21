@@ -1,6 +1,7 @@
 <?php
 class SshDaemon extends Daemon{
 	public static function start($instance){
+		CLogger::get('SshDaemon')->log('start: '.$instance);
 		list($workspaceId,$serverId)=explode('-',$instance,2);
 		
 		$workspace=Workspace::findOneById($workspaceId);
@@ -10,7 +11,7 @@ class SshDaemon extends Daemon{
 		
 		$server=Server::findOneById($serverId);
 		if($server===false) exit;
-		$sshOptions=$server->sshOptions();
+		$sshOptions=$server->sshOptions($workspace->name);
 		while(true){
 			$timeStart=microtime(true);
 			UExec::createPersistantSsh($sshOptions,3600);

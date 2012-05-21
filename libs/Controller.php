@@ -1,9 +1,9 @@
 <?php
 class AController extends Controller{
 	/** @var Workspace */
-	protected static $workspace;
+	public static $workspace;
 	
-	protected static function beforeDispatch(){
+	public static function beforeDispatch(){
 		if(!CSession::exists('workspace')){
 			if(CCookie::exists('Workspace')){
 				$workspaceCookie=CCookie::get('Workspace');

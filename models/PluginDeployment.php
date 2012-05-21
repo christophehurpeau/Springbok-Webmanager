@@ -68,13 +68,14 @@ class PluginDeployment extends SSqlModel{
 		
 		
 		/* DEPLOY CORE */
-		$res='========== DEPLOY CORE =========='.PHP_EOL.$this->server->deployCore();
-		$sc=ServerCore::findOneIdAndPathByServer_idAndVersion($this->server_id,Springbok::VERSION);
+		throw new Exception;
+		$scPath=$this->server->deployCore(false,$resp);
+		$res='========== DEPLOY CORE =========='.PHP_EOL.$resDeplCore;
 		
 		/* STOP ALL LINKED PROJECTS */
 		foreach($linkedProjectsDeployments as &$depl){
 			$depl->_set('server',$this->server);
-			$res.=PHP_EOL.PHP_EOL.'========== STOP PROJECT: '.$depl->project->name.' =========='.PHP_EOL.$depl->stop($sc);
+			$res.=PHP_EOL.PHP_EOL.'========== STOP PROJECT: '.$depl->project->name.' =========='.PHP_EOL.$depl->stop($scPath);
 		}
 
 		/* DEPLOY PLUGIN */
@@ -83,7 +84,7 @@ class PluginDeployment extends SSqlModel{
 		$res.=PHP_EOL.PHP_EOL.'========== SYNC PLUGIN =========='.PHP_EOL;
 		$res.=UExec::rsync($pluginPath,$this->path(),$options);
 
-		$baseDefine=$this->baseDefine($sc);
+		$baseDefine=$this->baseDefine($scPath);
 		$tmpfname = tempnam('/tmp','plugindepl');
 		$target=$this->path();
 		
@@ -110,16 +111,16 @@ include CORE.'plugin.php';");
 		
 		/* DEPLOY ALL PROJECTS */
 		foreach($linkedProjectsDeployments as &$depl)
-			$res.=PHP_EOL.PHP_EOL.'========== DEPLOY PROJECT: '.$depl->project->name.' =========='.PHP_EOL.$depl->doDeployment($workspaceId,$simulation,$backup,$schema);
+			$res.=PHP_EOL.PHP_EOL.'========== DEPLOY PROJECT: '.$depl->project->name.' =========='.PHP_EOL.$depl->doDeployment($workspaceId,$resp,$simulation,$backup,$schema);
 		
 		return $res;
 	}
 
 
-	private function baseDefine($sc){
+	private function baseDefine($scPath){
 		return "
 define('DS', DIRECTORY_SEPARATOR);
-define('CORE','".$this->server->core_dir.DS.$sc->path.DS."');
+define('CORE','".$this->server->core_dir.DS.$scPath.DS."');
 define('APP', __DIR__.DS);";
 	}
 }

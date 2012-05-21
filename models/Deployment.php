@@ -34,32 +34,32 @@ class Deployment extends SSqlModel{
 	}
 	
 	
-	public function doDeployment($workspaceId,$simulation=false,$backup=false,$schema=false){$schema=true;
+	public function doDeployment($workspaceId,$resp=null,$simulation=false,$backup=false,$schema=false){$schema=true;
+		$resp=new AHDeploymentResponse($resp);
 		/* PROJECT PATH */
 		$projectPath=$this->getProjectPath();
 		$entrances=$this->project->entrances();
 		
 		$sshOptions=$this->server->sshOptions();
 		
-		CDaemons::startIfNotAlive('Ssh',$workspaceId.'-'.$this->server_id);
+		if(CDaemons::startIfNotAlive('Ssh',$workspaceId.'-'.$this->server_id))
+			$resp->push('Daemon started.');
 		
 		/* DEPLOY CORE */
-		//UExec::createPersistantSsh($sshOptions,60);
-		$res='=> DEPLOY CORE'.PHP_EOL.$this->server->deployCore($simulation);
+		$scPath=$this->server->deployCore($this,$resp,$simulation);
+		if($scPath===false) return;
 		
 		/* DO PROJECT DEPLOYMENT */
 		if (!$simulation){
 			 if ($backup){
 			 	$options=array('simulation'=>$simulation,'exclude'=>NULL,'ssh'=>$sshOptions); // --exclude .* ?
 			 	$target = $backup.DS;
-				UExec::rsync($projectPath,$target,$options);
+				$resp->push('BACKUP'.PHP_EOL.UExec::rsync($projectPath,$target,$options));
 			 }
 		}
 		
-		$sc=ServerCore::findOneIdAndPathByServer_idAndVersion($this->server_id,Springbok::VERSION);
-		
 		$target=$this->path().DS;
-		$baseDefine=$this->baseDefine($sc);
+		$baseDefine=$this->baseDefine($scPath);
 
 		
 		/* -- -- -- */
@@ -73,21 +73,18 @@ class Deployment extends SSqlModel{
 		file_put_contents($tmpfname,"<?php".$baseDefine."
 ".'$action'."='schema';
 include CORE.'cli.php';");
-		$res.=PHP_EOL.'=> COPY schema.php'.PHP_EOL;
-		$res.=''.UExec::copyFile($tmpfname,$target.'schema.php',$sshOptions);
+		$resp->push('COPY schema.php'.PHP_EOL.UExec::copyFile($tmpfname,$target.'schema.php',$sshOptions));
 		
 		file_put_contents($tmpfname,"<?php".$baseDefine."
 ".'$action'."='job';
 include CORE.'cli.php';");
-		$res.=PHP_EOL.'=> COPY job.php'.PHP_EOL;
-		$res.=''.UExec::copyFile($tmpfname,$target.'job.php',$sshOptions);
+		$resp->push('COPY job.php'.PHP_EOL.UExec::copyFile($tmpfname,$target.'job.php',$sshOptions));
 		
 		
 		file_put_contents($tmpfname,"<?php".$baseDefine."
 ".'$action'."=".'$argv[1];'."
 include CORE.'cli.php';");
-		$res.=PHP_EOL.'=> COPY cli.php'.PHP_EOL;
-		$res.=''.UExec::copyFile($tmpfname,$target.'cli.php',$sshOptions);
+		$resp->push('COPY cli.php'.PHP_EOL.UExec::copyFile($tmpfname,$target.'cli.php',$sshOptions));
 		
 		$jsFilenames=array('global.js','jsapp.js');
 		foreach($this->project->entrances() as $entrance){
@@ -105,34 +102,31 @@ include CORE.'cli.php';");
 			}
 		}
 		
-		$res.=PHP_EOL.$this->stop($sc);
+		$resp->push($this->stop($scPath));
 		
-		$res.=PHP_EOL.'=> SYNC'.PHP_EOL;
-		//$res.=UExec::rsync(dirname(CORE).DS.'prod'.DS,$this->server->core_dir.DS.$sc->path.DS,$options);
-		$res.=''.UExec::rsync($projectPath,$target,$options);
+		$resp->push('SYNC'.PHP_EOL
+		/*$res.=UExec::rsync(dirname(CORE).DS.'prod'.DS,$this->server->core_dir.DS.$sc->path.DS,$options);*/
+			.UExec::rsync($projectPath,$target,$options));
 		
-		$dbPath=$this->project->path().DS.'db'.DS;
+		$dbPath=$this->project->path().'/db/';
 		if(is_dir($dbPath)){
 			$options['exclude']=array('.svn/');
-			$res.=PHP_EOL.'=> SYNC DB DIR'.PHP_EOL;
-			$res.=''.UExec::rsync($dbPath,$target.'db/',$options);
+			$resp->push('SYNC DB DIR'.PHP_EOL
+				.UExec::rsync($dbPath,$target.'db/',$options));
 		}
 		
-		Deployment::updateOneFieldByPk($this->id,'server_core_id',$sc->id);
-		
-		if($schema){
-			$res.=PHP_EOL.'=> EXECUTE schema.php'.PHP_EOL;
-			$res.=''.UExec::exec('php '.escapeshellarg($target.'schema.php'),$options['ssh']+array('forcePseudoTty'=>true));
-		}
-		
-		$res.=PHP_EOL.'=> CREATE symb link : '.'cd '.escapeshellarg($target.'web/').' && ln -s . '.date('mdH').PHP_EOL;
-		$res.=''.UExec::exec('cd '.escapeshellarg($target.'web/').' && ln -s . '.date('mdH'),$options['ssh']);
+		if($schema)
+			$resp->push('EXECUTE schema.php'.PHP_EOL
+				.UExec::exec('php '.escapeshellarg($target.'schema.php'),$options['ssh']+array('forcePseudoTty'=>true)));
 		
 		
-		$res.=PHP_EOL.'=> Make sure the rights are good'.PHP_EOL;
-		$res.=''.UExec::exec('cd '.escapeshellarg($target.'web/').' && chmod -R --quiet 755 .',$options['ssh']);
+		$resp->push('CREATE symb link : '.'cd '.escapeshellarg($target.'web/').' && ln -s . '.date('mdH').PHP_EOL
+			.UExec::exec('cd '.escapeshellarg($target.'web/').' && ln -s . '.date('mdH'),$options['ssh']));
 		
-		$res.=PHP_EOL.PHP_EOL.$this->start($sc);
+		$resp->push('Make sure the rights are good'.PHP_EOL
+			.UExec::exec('cd '.escapeshellarg($target.'web/').' && chmod -R --quiet 755 .',$options['ssh']));
+		
+		$resp->push($this->start($scPath));
 		
 		/* UPDATE CRON */
 	
@@ -153,47 +147,37 @@ include CORE.'cli.php';");
 			
 			if(!empty($cronfile)){
 				file_put_contents($tmpfname,$cronfile);
-				$res.=PHP_EOL.'=> COPY CRON'.PHP_EOL;
-				$res.=''.UExec::copyFile($tmpfname,'/etc/cron.d/springbok-'.$this->id,$sshOptions);
+				$resp->push('COPY CRON'.PHP_EOL
+					.UExec::copyFile($tmpfname,'/etc/cron.d/springbok-'.$this->id,$sshOptions));
 			}
 		}
 		
 		if(file_exists($jobFilePath=$projectPath.'jobs/AfterDeployJob.php')){
-			$res.=PHP_EOL.'=> EXECUTE job AfterDeploy'.PHP_EOL;
-			$res.=''.UExec::exec('php '.escapeshellarg($target.'job.php').' AfterDeploy',$options['ssh']+array('forcePseudoTty'=>true));
+			$resp->push('EXECUTE job AfterDeploy'.PHP_EOL
+				.UExec::exec('php '.escapeshellarg($target.'job.php').' AfterDeploy',$options['ssh']+array('forcePseudoTty'=>true)));
 		}
 		
 		/* Delete old cores */
-		$cores=ServerCore::QAll()->with('Deployment',array('isCount'=>true))->with('Server')->having(array('deployments=0'));
-		if(!empty($cores)){
-			$res.=PHP_EOL.'=> DELETE OLD CORES'.PHP_EOL;
-			foreach($cores as $core){
-				UExec::exec('rm -rf '.$core->server->core_dir.DS.$core->path,$core->server->sshOptions());
-				$res.=$core->path.PHP_EOL;
-				$core->delete();
-			}
-		}
+		$this->server->removeOldCores($resp);
 		
 		/* Delete tmp file */
 		unlink($tmpfname);
-		
-		return $res;
 	}
 	
 	
-	private function baseDefine($sc){
+	private function baseDefine($scPath){
 		return "
 define('DS', DIRECTORY_SEPARATOR);
-define('CORE','".$this->server->core_dir.DS.$sc->path.DS."');
+define('CORE','".$this->server->core_dir.DS.$scPath.DS."');
 define('APP', __DIR__.DS);";
 	}
 	
 	/* NEED : project,server */
-	public function start($sc=NULL){
-		if($sc===NULL) $sc=ServerCore::findOneIdAndPathByIdAndServer_id($this->server_core_id,$this->server_id);
+	public function start($scPath=NULL){
+		if($scPath===NULL) throw new Exception("Error Processing Request", 1);
 		
 		$webFolder=date('mdH');
-		$indexContentStarted="<?php".$this->baseDefine($sc)."
+		$indexContentStarted="<?php".$this->baseDefine($scPath)."
 define('APP_DATE',".time().");define('WEB_FOLDER','".$webFolder."/');
 include CORE.'app.php';";
 
@@ -221,11 +205,11 @@ include CORE.'app.php';";
 	}
 	
 	/* NEED : project,server */
-	public function stop($sc=NULL){
-		if($sc===NULL) $sc=ServerCore::findOneIdAndPathByIdAndServer_id($this->server_core_id,$this->server_id);
+	public function stop($scPath=NULL){
+		if($scPath===NULL) throw new Exception("Error Processing Request", 1);
 		
 		$indexContentStopped="<?php
-header('HTTP/1.1 503 Service Temporarily Unavailable',true,503);".$this->baseDefine($sc)."
+header('HTTP/1.1 503 Service Temporarily Unavailable',true,503);".$this->baseDefine($scPath)."
 if(file_exists((".'$filename'."=CORE.'maintenance.php'))){
 	define('APP_DATE',".time()."); define('WEB_FOLDER','');
 	include ".'$filename'.";

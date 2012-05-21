@@ -5,7 +5,7 @@
 <div><h2><? $count=count($server->deployments)?> <?= _t_p('deployment',$count) ?></h2>
 	<ul>
 <?php foreach($server->deployments as $deployment): ?>
-	<li>{link $deployment->project->name,'/project/view/'.$deployment->project_id}</li>
+	<li>{link $deployment->project->name,'/projectDeployment/all/'.$deployment->project_id}</li>
 <?php endforeach; ?>
 </ul></div>
 <?php endif; ?>

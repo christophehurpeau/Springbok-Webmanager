@@ -1,5 +1,5 @@
 $PAGE_FIXED:true;
-@includeCore 'colors/simpleblue.scss';
+@includeCore 'colors/darkblue.scss';
 @includeCore 'default.scss';
 @includeCore 'base/ajax.scss';
 
@@ -23,4 +23,15 @@ ul.devtools_colors li{
 
 .dbsqlcode .CodeMirror-scroll{
 	height:70px
+}
+
+ul#deployList{
+  @extend ul.nobullets;
+}
+
+ul#deployList li{
+  margin-top:6px;
+  border-radius:4px;
+  @include bg-gradient-tb(#cfcfcf,#c0c0c0);
+  white-space: pre;
 }

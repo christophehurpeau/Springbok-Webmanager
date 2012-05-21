@@ -58,7 +58,7 @@ class ServersController extends AController{
 	function edit(int $id,Server $server){
 		if($server){
 			if(!empty($_FILES)){
-				$sshDir=Config::$data_dir.'ssh/';
+				$sshDir=Config::$data_dir.'ssh/'.AController::$workspace->name.'/';
 				self::moveUploadedFile('public_key',$sshDir.$id.'-key.pub');
 				self::moveUploadedFile('private_key',$sshDir.$id.'-key');
 				chmod($sshDir.$id.'-key.pub',0600);
@@ -110,7 +110,9 @@ class ServersController extends AController{
 	 */
 	function core_update(int $id){
 		$server=Server::findOneById($id);
-		self::set('res',$server->deployCore(false,true));
+		throw new Exception;
+		$scPath=$server->deployCore(false,$resp,false,true);
+		mset($res);
 		self::render();
 	}
 	
