@@ -52,7 +52,7 @@ class Server extends SSqlModel{
 		$sshOptions=$this->sshOptions();
 		
 		$blockFile=UExec::exec('cat '.escapeshellarg($this->core_dir.'/block'),$sshOptions);
-		if(!endsWith($blockFile,'No such file or directory') && !endsWith($blockFile,'Aucun fichier ou dossier de ce type')){
+		if(!(endsWith($blockFile,'No such file or directory') || endsWith($blockFile,'Aucun fichier ou dossier de ce type'))){
 			$resp->push("DEPLOY CORE:\n".'A deployment is already in progress by '.$blockFile);
 			return false;
 		}
@@ -72,6 +72,10 @@ class Server extends SSqlModel{
 				$versionsChanged=true;
 			}
 		}elseif(!empty($versions)) $versions=json_decode($versions,true);
+		else{
+			$resp->push('ERROR: version is empty');
+			return false;
+		}
 		
 		if(!isset($versions[Springbok::VERSION]) || $force){
 			$resp->push('CORE VERSION IS NOT UP-TO-DATE ON SERVER');
