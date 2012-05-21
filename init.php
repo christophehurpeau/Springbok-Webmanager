@@ -1,0 +1,59 @@
+<?php
+$webmanagerDir=dirname(__DIR__).'/';
+$baseDir=dirname($webmanagerDir).'/';
+
+echo shell_exec('cd '.escapeshellarg($webmanagerDir).' && ln -s src/enhance.php');
+
+$coreDir=$baseDir.'core/dev/';
+file_put_contents($webmanagerDir.'cli.php',"<?php
+define('DS', DIRECTORY_SEPARATOR);
+define('CORE','".$coreDir."');
+define('APP', __DIR__.DS.'dev'.DS);
+".'unset($argv[0]);
+$action=array_shift($argv);'."
+include CORE.'cli.php';");
+
+mkdir($webmanagerDir.'config');
+echo shell_exec('cd '.escapeshellarg($webmanagerDir).' && ln -s config src/config ');
+
+$env=include $baseDir.'core/env.php';
+
+file_put_contents($webmanagerDir.'config/secure.php','<?php return array();');
+file_put_contents($webmanagerDir.'config/cookies.php','<?php return null;');
+file_put_contents($webmanagerDir.'config/enhance.php',"<?php return array(
+	'base'=>array('i18n'),
+	'includes'=>array(
+		'img'=>array('filetree','jquery-ui'),
+		'js'=>array('ace')
+	)
+);");
+file_put_contents($webmanagerDir.'config/_.php',"<?php return array(
+	'project_name'=>'webmanager',
+	'projectName'=>'Springbok WebManager',
+	'default_lang'=>'fr',
+	
+	'secure'=>array(
+		'crypt_key'=>".str_replace('"','0',uniqid('',true)).",
+	)
+);");
+
+file_put_contents($webmanagerDir.'config/_'.$env.'.php',"<?php return array(
+	'site_url'=>'http://localhost/springbok/webmanager/',
+	'php_doc_dir'=>dirname(__DIR__).'/php-chunked-xhtml/',
+	
+	'db'=>array(
+		'_lang'=>dirname(__DIR__).'/db/',
+		'default'=>array('type'=>'SQLite', 'file'=>dirname(__DIR__).'/webmanager.db',),
+	),
+	'generate'=>array('default'=>true),
+);");
+
+file_put_contents($webmanagerDir,'config/routes.php',"<?php return array(
+	'/'=>array('Site::index'),
+	'/phpdoc/:file'=>array('Phpdoc::index'),
+	'/editor/:id/:action/*'=>array('Editor::!'),
+	'/editor/ace/:file'=>array('Editor::ace',array('file'=>'.*')),
+	'/:controller(/:action/*)?'=>array('!::!'),
+);");
+
+file_put_contents($webmanagerDir,'config/routes-langs.php');

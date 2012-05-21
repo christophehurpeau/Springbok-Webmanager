@@ -130,7 +130,10 @@ include CORE.'cli.php';";
 		if(!file_exists($projectPath)){
 			mkdir($projectPath,0777,true);
 			mkdir($dir=$projectPath.'config/');
-			file_put_contents($dir.'_.php',"<?"."php return array(\n\t'project_name'=>'".UInflector::underscore(preg_replace('/\s+/','',$projectName))."',\n\t'projectName'=>'".$projectName."',\n\t'default_lang'=>'fr',\n);");
+			file_put_contents($dir.'_.php',"<?"."php return array(\n\t'project_name'=>'".UInflector::underscore(preg_replace('/\s+/','',$projectName))."',"
+				."\n\t'projectName'=>'".$projectName."',\n\t'default_lang'=>'fr',\n"
+				."\n\t'secure'=>array('crypt_key'=>".str_replace('"','0',uniqid('',true)).",)"
+				."\n);");
 			file_put_contents($dir.'_'.ENV.'.php',"<?"."php return array(\n\t'db'=>array(\n\t\t'_lang'=>dirname(dirname(__DIR__)).'/db/',\n\t\t'default'=>array(\n\t\t\t\n\t\t\t'user'=>'root','password'=>'root'\n\t\t),\n\t),'generate'=>array('default'=>true)\n\t\n);");
 			file_put_contents($dir.'routes.php',"<?"."php return array(\n\t'/favicon'=>array('Site::favicon','ext'=>'[a-z]+'),\n\t'/robots'=>array('Site::robots','ext'=>'txt'),\n\t'/'=>array('Site::index'),"
 				."\n\t'/:controller(/:action/*)?'=>array('!::!'),\n);");
@@ -148,7 +151,7 @@ include CORE.'cli.php';";
 			mkdir($dir=$projectPath.'views/');
 			mkdir($dir2=$dir.'Site/');
 			file_put_contents($dir2.'index.php',"<?"."php new AjaxContentView() ?".">");
-			mkdir($dir=$projectPath.'viewLayouts/');
+			mkdir($dir=$projectPath.'viewsLayouts/');
 			file_put_contents($dir.'base.php',"<!DOCTYPE html>\n<html>\n\t<head>\n\t\t<meta charset=\"UTF-8\">\n\t\t<title>".'{$layout_title}'."</title>"
 				."\n\t\t<?"."php HHtml::cssLink() ?".">\n\t</head>\n\t<body>"
 				."\n\t\t".'{=$layout_content}'
@@ -210,10 +213,13 @@ include CORE.'cli.php';";
 		notFoundIfFalse($project);
 		$jobs=include $project->path().DS.'dev'.DS.'config'.DS.'jobs.php';
 		if(!isset($jobs[$name])) notFound();
-		set_time_limit(0);
-		self::set('output',UExec::php(CORE.'cron.php',$project->path().DS.'dev'.DS,$name));
-		self::mset($project,$name);
-		self::render();
+		//if(!CHttpRequest::isPOST()) render('job_confirm');
+		else{
+			set_time_limit(0);
+			self::set('output',UExec::php(CORE.'cron.php',$project->path().DS.'dev'.DS,$name));
+			self::mset($project,$name);
+			self::render();
+		}
 	}
 	
 	
