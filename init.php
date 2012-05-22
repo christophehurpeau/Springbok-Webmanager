@@ -48,7 +48,7 @@ file_put_contents($webmanagerDir.'config/_'.$env.'.php',"<?php return array(
 	'generate'=>array('default'=>true),
 );");
 
-file_put_contents($webmanagerDir,'config/routes.php',"<?php return array(
+file_put_contents($webmanagerDir.'config/routes.php',"<?php return array(
 	'/'=>array('Site::index'),
 	'/phpdoc/:file'=>array('Phpdoc::index'),
 	'/editor/:id/:action/*'=>array('Editor::!'),
@@ -56,4 +56,4 @@ file_put_contents($webmanagerDir,'config/routes.php',"<?php return array(
 	'/:controller(/:action/*)?'=>array('!::!'),
 );");
 
-file_put_contents($webmanagerDir,'config/routes-langs.php');
+//file_put_contents($webmanagerDir.'config/routes-langs.php','<?php rerturn array();');
