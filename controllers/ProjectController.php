@@ -96,15 +96,15 @@ include CORE.'cli.php';";
 	*/ function add(Project $project){
 		if($project!==NULL && !CValidation::hasErrors()){
 			$projectPath=self::$workspace->projects_dir.$project->path.DS;
-			mkdir($projectPath,0777,true);
-			mkdir($projectPath.'tmp/',0755);
-			mkdir($projectPath.'dev/',0755);
-			mkdir($projectPath.'prod/',0755);
-			mkdir($projectPath.'db/',0755);
-			mkdir($projectPath.'data/',0775);
-			mkdir($projectPath.'data/tmp/',0775);
-			mkdir($projectPath.'sql/',0777);
-			self::_createStructure($projectPath.'src/',$project->name);
+			if(!file_exists($projectPath)) mkdir($projectPath,0777,true);
+			if(!file_exists($projectPath.'tmp/')) mkdir($projectPath.'tmp/',0755);
+			if(!file_exists($projectPath.'dev/')) mkdir($projectPath.'dev/',0755);
+			if(!file_exists($projectPath.'prod/')) mkdir($projectPath.'prod/',0755);
+			if(!file_exists($projectPath.'db/')) mkdir($projectPath.'db/',0755);
+			if(!file_exists($projectPath.'data/')) mkdir($projectPath.'data/',0775);
+			if(!file_exists($projectPath.'data/tmp/')) mkdir($projectPath.'data/tmp/',0775);
+			if(!file_exists($projectPath.'sql/')) mkdir($projectPath.'sql/',0777);
+			if(!file_exists($projectPath.'src/')) self::_createStructure($projectPath.'src/',$project->name);
 			$project->insert();
 			self::redirect('/project');
 		}
