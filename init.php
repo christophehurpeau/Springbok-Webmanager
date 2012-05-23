@@ -14,7 +14,7 @@ $action=array_shift($argv);'."
 include CORE.'cli.php';");
 
 mkdir($webmanagerDir.'config');
-echo shell_exec('cd '.escapeshellarg($webmanagerDir).' && ln -s config src/config ');
+echo shell_exec('cd '.escapeshellarg($webmanagerDir).'src && ln -s ../config ');
 
 $env=include $baseDir.'core/env.php';
 
@@ -33,7 +33,7 @@ file_put_contents($webmanagerDir.'config/_.php',"<?php return array(
 	'default_lang'=>'fr',
 	
 	'secure'=>array(
-		'crypt_key'=>".str_replace('"','0',uniqid('',true)).",
+		'crypt_key'=>'".str_replace("'",'0',uniqid('',true))."',
 	)
 );");
 
