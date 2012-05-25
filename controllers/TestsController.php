@@ -232,4 +232,21 @@ class TestsController extends Controller{
 			'jaroWinkler'=>HString::jaroWinkler($_GET['1'],$_GET['2'])
 		);
 	}
+	
+	public static function form(){
+		return UProfiling::compare(40000,function(){
+			ob_start();
+			$form=HForm::create('Project',array('action','/projects/add'));
+			echo $form->input('name');
+			$form->end(true,array(),array());
+			ob_end_clean();
+		},function(){
+			ob_start();
+			echo $form=Project::Form()->action('/projects/add');
+			echo $form->input('name');
+			echo $form->end();
+			ob_end_clean();
+		});
+		
+	}
 }
