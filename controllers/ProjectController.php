@@ -158,19 +158,18 @@ include CORE.'cli.php';";
 				."\n\t</body>"."\n</html>");
 			
 			file_put_contents($dir.'page.php',"<?php new AjaxBaseView(".'$layout_title'.") ?>"
-				."\n<header>\n\t<div id=\"logo\">".$projectName."</div>\n\t{menuTop 'startsWith':true"
-				."\n\t\t_tC('Home'):false,\n"."\t\t}"
-				."\n\t\t<br class=\"clear\"/>"
+				."\n<header class=\"clearfix\">\n\t<div id=\"logo\">".$projectName."</div>\n\t{menuTop 'startsWith':true"
+				."\n\t\t_tC('Home'):false,\n"."\t}"
 				."\n</header>\n".'{=$layout_content}'
 				."\n<footer>Version du <b><? HHtml::enhanceDate() ?></b> | <? HHtml::powered() ?></footer>");
 			file_put_contents($dir.'default.php',"<?php new AjaxPageView(".'$layout_title'.") ?>"
-				."\n<div class=\"variable\">"
+				."\n<div class=\"variable padding\">"
 				."\n\t<h1>".'{$layout_title}'."</h1>"
 				."\n\t".'{=$layout_content}'
 				."\n</div>");
 			mkdir($dir=$projectPath.'web/');
 			mkdir($dir2=$dir.'css/');
-			file_put_contents($dir2.'main.css',"@includeCore 'springbok-dawn.css';");
+			file_put_contents($dir2.'main.scss',"$PAGE_FIXED:false;\n@includeCore 'colors/darkblue.css';\n@includeCore 'default.scss';");
 			mkdir($dir.'img/');
 			mkdir($dir.'js/');
 		}
