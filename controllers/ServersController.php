@@ -9,10 +9,9 @@ class ServersController extends AController{
 	
 	/** */
 	function index(){
-		$tableservers=CTable::create(Server::QAll());
-		$tableservers->setActionsRUD();
-		self::mset($tableservers);
-		self::render();
+		Server::Table()->paginate()->setActionsRUD();
+		mset($tableservers);
+		render();
 	}
 	
 	/** */

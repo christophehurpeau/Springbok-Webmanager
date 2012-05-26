@@ -4,10 +4,7 @@ class ProjectController extends AController{
 	
 	/** */
 	function index(){
-		$tableprojects=CTable::create(Project::QAll());
-		$tableprojects->setActionsRUD();
-		self::mset($tableprojects);
-		self::renderTable(_t('Projects'),$tableprojects);
+		Project::Table()->paginate()->setActionsRUD()->render(_t('Projects'));
 	}
 	
 	/** @ValidParams

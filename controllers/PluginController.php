@@ -7,12 +7,9 @@ class PluginController extends AController{
 		return true;
 	}
 	
-	/**
-	*/ function index(){
-		$tableplugins=CTable::create(Plugin::QAll());
-		$tableplugins->setActionsRUD();
-		self::mset($tableplugins);
-		self::renderTable(_t('Plugins'),$tableplugins);
+	/** */
+	function index(){
+		Plugin::Table()->paginate()->setActionsRUD()->render(_t('Plugins'));
 	}
 	
 	

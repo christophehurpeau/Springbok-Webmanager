@@ -2,20 +2,18 @@
 class WorkspaceController extends AController{
 	/** */
 	function index(){
-		$tableworkspaces=CTable::create(Workspace::QAll());
-		$tableworkspaces->setActionsRUD();
-		$tableworkspaces->rowActions[]=$tableworkspaces->defaultAction='select';
-		self::mset($tableworkspaces);
-		self::render();
+		$tableworkspaces=Workspace::Table()->paginate()->setActionsRUD()->actionClick('select')->addAction('select');
+		mset($tableworkspaces);
+		render();
 	}
 	
 	/** @ValidParams
 	* id > @Required
 	*/ function view(int $id){
 		$workspace=Workspace::findOneById($id);
-		if(empty($workspace)) notFound();
-		self::mset($workspace);
-		self::render();
+		notFoundIfFalse($workspace);
+		mset($workspace);
+		render();
 	}
 	
 	/** @ValidParams
