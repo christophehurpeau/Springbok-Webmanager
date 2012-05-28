@@ -5,7 +5,6 @@
 		_tC('Home')=>false,
 		_t('Workspaces')=>'/workspace',
 		_t('Projects')=>'/project',
-		_t('Plugins')=>'/plugin',
 		_t('Servers')=>'/servers',
 		_t('Springbok Core')=>'/core',
 		_t('Dev Tools')=>'/devtools',

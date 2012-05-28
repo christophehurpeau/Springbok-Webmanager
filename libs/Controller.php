@@ -41,8 +41,8 @@ class AController extends Controller{
 					as $pathname=>$fileInfo){
 			if(substr($fileInfo->getFilename(),0,1) == '.') continue;
 			if($fileInfo->isDir()) self::_recursiveFiles($pathname,$arrayStrings,$functionName,$deleteLastParam);
-			if(!in_array(substr($fileInfo->getFilename(),-3),array('.js','php')) || substr($fileInfo->getFilename(),0,4)=='i18n') continue;
-			$matches=array(); preg_match_all($pattern?$pattern:'/(?:\b'.$functionName.'\((.+)\)|\{'.substr($functionName,1).'\s+([^}]+)\s*\})/Um',file_get_contents($pathname),$matches);
+			if(!in_array(($ext=substr($fileInfo->getFilename(),-3)),array('.js','php')) || substr($fileInfo->getFilename(),0,4)=='i18n') continue;
+			$matches=array(); preg_match_all($pattern?$pattern:'/(?:\b'.$functionName.'\((.+)\)'.($ext==='php'?'|\{'.substr($functionName,1).'\s+([^}]+)\s*\}':'').')/Um',file_get_contents($pathname),$matches);
 			if(!empty($matches[1])){
 				foreach($matches[1] as $key=>$value)
 					if(empty($matches[1][$key])) $matches[1][$key]=$matches[2][$key];

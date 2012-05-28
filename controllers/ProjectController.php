@@ -108,9 +108,16 @@ include CORE.'cli.php';";
 		self::render();
 	}
 	
-	/**
+	
+	const CRUD_MODEL='Project';
+	/** @ValidParams @Required('id') */
+	function edit(int $id){
+		CRUD::edit(self::CRUD_MODEL,$id,null,null,'project');
+	}
+	
+	/*
 	* id > @Required
-	*/ function edit(int $id){
+	function edit(int $id){
 		CRUD::edit('Project',$id);/*
 		if(empty($id)) notFound();
 		if($project!==NULL && !CValidation::hasErrors()){
@@ -119,8 +126,8 @@ include CORE.'cli.php';";
 			self::redirect('/project/view/'.$id);
 		}elseif(!$project) $project=Project::findOneById($id);
 		self::mset($project);
-		self::render();*/
-	}
+		self::render();
+	}*/
 	
 	
 	private static function _createStructure($projectPath,$projectName){
