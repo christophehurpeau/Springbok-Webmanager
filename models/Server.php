@@ -82,6 +82,10 @@ class Server extends SSqlModel{
 			$scPath=isset($versions[Springbok::VERSION]) ? $versions[Springbok::VERSION] : 'springbok-'.date('Y-m-d');
 			$versionsChanged=true;
 			
+			if(empty($versions)){
+				$resp->push('ERROR versions : '.json_encode($versions));
+				return false;
+			}
 			$updateVersion=false;
 			foreach($versions as $sbVersion=>$v)
 				if($v[0]===$scPath){
