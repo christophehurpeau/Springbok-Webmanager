@@ -73,8 +73,8 @@ class Server extends SSqlModel{
 			}
 		}elseif(!empty($versions)) $versions=json_decode($versions,true);
 		else{
-			$resp->push('WARNING: version is empty');
-			//return false;
+			$resp->push('ERROR: version is empty');
+			return false;
 		}
 		
 		if(!isset($versions[Springbok::VERSION]) || $force){
@@ -82,10 +82,10 @@ class Server extends SSqlModel{
 			$scPath=isset($versions[Springbok::VERSION]) ? $versions[Springbok::VERSION] : 'springbok-'.date('Y-m-d');
 			$versionsChanged=true;
 			
-			if(empty($versions)){
+			/*if(empty($versions)){
 				$resp->push('ERROR versions : '.json_encode($versions));
 				return false;
-			}
+			}*/
 			$updateVersion=false;
 			foreach($versions as $sbVersion=>$v)
 				if($v[0]===$scPath){
