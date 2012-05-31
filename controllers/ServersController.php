@@ -9,7 +9,7 @@ class ServersController extends AController{
 	
 	/** */
 	function index(){
-		Server::Table()->paginate()->setActionsRUD();
+		$tableservers=Server::Table()->paginate()->setActionsRUD();
 		mset($tableservers);
 		render();
 	}
