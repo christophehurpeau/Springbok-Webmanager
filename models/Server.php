@@ -73,8 +73,8 @@ class Server extends SSqlModel{
 			}
 		}elseif(!empty($versions)) $versions=json_decode($versions,true);
 		else{
-			$resp->push('ERROR: version is empty');
-			return false;
+			$resp->push('WARNING: version is empty');
+			//return false;
 		}
 		
 		if(!isset($versions[Springbok::VERSION]) || $force){
