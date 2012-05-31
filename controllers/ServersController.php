@@ -17,7 +17,7 @@ class ServersController extends AController{
 	/** */
 	function initSsh(){
 		$sshDir='/var/www/.ssh/';
-		if(!file_exists($sshDir)) mkdir($sshDir,0600);
+		if(!file_exists($sshDir)) mkdir($sshDir,0700);
 		if(!file_exists($sshDir.'config')) file_put_contents($sshDir.'config','Host *
    ControlMaster auto
    ControlPath ~/.ssh/master-%r@%h:%p');
