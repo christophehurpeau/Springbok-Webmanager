@@ -57,7 +57,7 @@ class ServersController extends AController{
 	function edit(int $id,Server $server){
 		if($server){
 			if(!empty($_FILES)){
-				$sshDir=Config::$data_dir.'ssh/'.AController::$workspace->name.'/';
+				$sshDir=DATA.'ssh/'.AController::$workspace->name.'/';
 				self::moveUploadedFile('public_key',$sshDir.$id.'-key.pub');
 				self::moveUploadedFile('private_key',$sshDir.$id.'-key');
 				chmod($sshDir.$id.'-key.pub',0600);
