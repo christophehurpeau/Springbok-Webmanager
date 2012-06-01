@@ -119,9 +119,9 @@ include CORE.'cli.php';");
 			$resp->push('EXECUTE schema.php'.PHP_EOL
 				.UExec::exec('php '.escapeshellarg($target.'schema.php'),$options['ssh']+array('forcePseudoTty'=>true)));
 		
-		$webFolder=shortAlphaNumber_enc(date('mdHi'));
+		$webFolder=shortAlphaNumber_enc(floor((time()/60-strtotime(date('Y').'-01-01')/60)/3)); //nombres de (3) minutes depuis le début de l'année (2 minutes : on est à 4 lettres à la fin de l'année ; 3 on reste à 3)
 		
-		$resp->push('CREATE symb link : '.'cd '.escapeshellarg($target.'web/').' && ln -s . '.$webFolder.PHP_EOL
+		$resp->push('CREATE symb link: cd '.escapeshellarg($target.'web/').' && ln -s . '.$webFolder.PHP_EOL
 			.UExec::exec('cd '.escapeshellarg($target.'web/').' && ln -s . '.$webFolder,$options['ssh']));
 		
 		$resp->push('Make sure the rights are good'.PHP_EOL

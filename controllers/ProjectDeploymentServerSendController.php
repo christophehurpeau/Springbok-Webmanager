@@ -12,10 +12,10 @@ class ProjectDeploymentServerSendController extends SControllerServerSentEvents{
 		
 		$projectPath=dirname($deployment->getProjectPath()).'/';
 		if(file_exists($projectPath.'block_enhance')){
-			self::$resp->data('An enhance is still in progress. Aborted.');
+			self::$resp->data('ERROR: An enhance is still in progress. Aborted.');
 			self::$resp->push();
 		}elseif(file_exists($projectPath.'block_delayedEnhanceDaemon')){
-			self::$resp->data('The delayed enhance daemon is still active. Aborted.');
+			self::$resp->data('ERROR: The delayed enhance daemon is still active. Aborted.');
 			self::$resp->push();
 		}else{
 			file_put_contents($projectPath.'block_deploy','');
