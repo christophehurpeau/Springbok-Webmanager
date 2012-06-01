@@ -6,6 +6,7 @@ includeCore('springbok.forms');
 includeCore('springbok.ajax');
 includeCore('springbok.dynamictabs');
 
+define('AJAX_CONTENT_EFFECT',false);
 
 includeLib('codemirror/codemirror');
 includeLib('codemirror/overlay');
