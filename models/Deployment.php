@@ -119,14 +119,15 @@ include CORE.'cli.php';");
 			$resp->push('EXECUTE schema.php'.PHP_EOL
 				.UExec::exec('php '.escapeshellarg($target.'schema.php'),$options['ssh']+array('forcePseudoTty'=>true)));
 		
+		$webFolder=shortAlphaNumber_enc(date('mdHi'));
 		
-		$resp->push('CREATE symb link : '.'cd '.escapeshellarg($target.'web/').' && ln -s . '.date('mdH').PHP_EOL
-			.UExec::exec('cd '.escapeshellarg($target.'web/').' && ln -s . '.date('mdH'),$options['ssh']));
+		$resp->push('CREATE symb link : '.'cd '.escapeshellarg($target.'web/').' && ln -s . '.$webFolder.PHP_EOL
+			.UExec::exec('cd '.escapeshellarg($target.'web/').' && ln -s . '.$webFolder,$options['ssh']));
 		
 		$resp->push('Make sure the rights are good'.PHP_EOL
 			.UExec::exec('cd '.escapeshellarg($target.'web/').' && chmod -R --quiet 755 .',$options['ssh']));
 		
-		$resp->push($this->start($scPath));
+		$resp->push($this->start($scPath,$webFolder));
 		
 		/* UPDATE CRON */
 	
@@ -173,10 +174,9 @@ define('APP', __DIR__.DS);";
 	}
 	
 	/* NEED : project,server */
-	public function start($scPath=NULL){
+	public function start($scPath=NULL,$webFolder){
 		if($scPath===NULL) throw new Exception("Error Processing Request", 1);
 		
-		$webFolder=date('mdH');
 		$indexContentStarted="<?php".$this->baseDefine($scPath)."
 define('APP_DATE',".time().");define('WEB_FOLDER','".$webFolder."/');
 include CORE.'app.php';";
