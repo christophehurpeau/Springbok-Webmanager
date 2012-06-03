@@ -129,6 +129,10 @@ include CORE.'cli.php';");
 		
 		$resp->push($this->start($scPath,$webFolder));
 		
+		$resp->push('Delete CACHE files'.PHP_EOL
+			.UExec::exec('cd '.escapeshellarg($target.'data/').' && rm -f cache/* ; rm -f cache/*/* ; rm -f elementsCache/* ; rm -f elementsCache/*/*',$options['ssh']));
+		
+		
 		/* UPDATE CRON */
 	
 		if(false && file_exists($jobsFilePath=$projectPath.'config/jobs.php')){
