@@ -173,7 +173,7 @@ include CORE.'cli.php';";
 				."\n</div>");
 			mkdir($dir=$projectPath.'web/');
 			mkdir($dir2=$dir.'css/');
-			file_put_contents($dir2.'main.scss',"$PAGE_FIXED:false;\n@includeCore 'colors/darkblue.css';\n@includeCore 'default.scss';");
+			file_put_contents($dir2.'main.scss',"\$PAGE_FIXED:false;\n@includeCore 'colors/darkblue.css';\n@includeCore 'default.scss';");
 			mkdir($dir.'img/');
 			mkdir($dir.'js/');
 		}
