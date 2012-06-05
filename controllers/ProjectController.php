@@ -136,7 +136,7 @@ include CORE.'cli.php';";
 			mkdir($dir=$projectPath.'config/');
 			file_put_contents($dir.'_.php',"<?"."php return array(\n\t'project_name'=>'".UInflector::underscore(preg_replace('/\s+/','',$projectName))."',"
 				."\n\t'projectName'=>'".$projectName."',\n\t'default_lang'=>'fr',\n"
-				."\n\t'secure'=>array('crypt_key'=>".str_replace('"','0',uniqid('',true)).",)"
+				."\n\t'secure'=>array('crypt_key'=>'".str_replace("'",'0',uniqid('',true))."',)"
 				."\n);");
 			file_put_contents($dir.'_'.ENV.'.php',"<?"."php return array(\n\t'db'=>array(\n\t\t'_lang'=>dirname(dirname(__DIR__)).'/db/',\n\t\t'default'=>array(\n\t\t\t\n\t\t\t'user'=>'root','password'=>'root'\n\t\t),\n\t),'generate'=>array('default'=>true)\n\t\n);");
 			file_put_contents($dir.'routes.php',"<?"."php return array(\n\t'/favicon'=>array('Site::favicon','ext'=>'[a-z]+'),\n\t'/robots'=>array('Site::robots','ext'=>'txt'),\n\t'/'=>array('Site::index'),"
@@ -173,7 +173,7 @@ include CORE.'cli.php';";
 				."\n</div>");
 			mkdir($dir=$projectPath.'web/');
 			mkdir($dir2=$dir.'css/');
-			file_put_contents($dir2.'main.scss',"\$PAGE_FIXED:false;\n@includeCore 'colors/darkblue.css';\n@includeCore 'default.scss';");
+			file_put_contents($dir2.'main.scss',"\$PAGE_FIXED:false;\n@includeCore 'colors/darkblue';\n@includeCore 'default';");
 			mkdir($dir.'img/');
 			mkdir($dir.'js/');
 		}
