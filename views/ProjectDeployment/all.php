@@ -7,7 +7,7 @@
 		<ul>
 		{f $deployments as $deployment}
 			<li>{link $deployment->server->name.' - '.$deployment->server->projects_dir.$deployment->path,'/projectDeployment/view/'.$deployment->id}
-				 {iconLink 'delete','Supprimer','/projectDeployment/del/'.$deployment->id,array('confirm'=>_t('Are you sure ?'))}
+				 {iconLink 'delete','Supprimer','/projectDeployment/del/'.$deployment->id,array('confirm'=>_tC('Are you sure ?'))}
 				 {iconLink 'edit','Modifier','/projectDeployment/edit/'.$deployment->id}
 			</li>
 		{/f}
