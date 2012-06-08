@@ -20,3 +20,5 @@ includeLib('codemirror/modes/php/php');
 includeLib('codemirror/modes/htmlmixed/htmlmixed');
 
 includeCore('springbok.contextmenu');
+
+includeCore('ht5ifv');

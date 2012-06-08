@@ -37,7 +37,7 @@
     <li class="insert">{icon folder_add}<a href="#folder_add">{t 'Add new folder'}</a></li>
 </ul>
 <ul id="folderMenu" class="contextMenu">
-    <li class="insert">{icon page_add}<a href="#file_add">{t 'Add new file'}</a></li>
+    <li class="insert">{icon pageAdd}<a href="#file_add">{t 'Add new file'}</a></li>
     <li class="insert">{icon folder_add}<a href="#folder_add">{t 'Add new folder'}</a></li>
     <li class="edit">{icon folder_edit}<a href="#folder_edit">{t 'Edit folder'}</a></li>
     <li class="delete">{icon folder_delete}<a href="#folder_delete">{t 'Delete folder'}</a></li>
