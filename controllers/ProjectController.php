@@ -148,9 +148,9 @@ include CORE.'cli.php';";
 			
 			mkdir($dir=$projectPath.'controllers/');
 			file_put_contents($dir.'SiteCont'.'roller.php',"<?"."php\ncl"."ass SiteContr"."oller extends Contr"."oller{\n"
-				."\t/**\n*/\tfunct"."ion index(){\n\t\t".'self::render()'.";\n\t}\n"
-				."\n\t/**\n\t*/ funct"."ion favicon(){\n\t\tself::renderFile(APP.'web/img/favicon.ico');\n\t}\n"
-				."\n\t/**\n\t*/ funct"."ion robots(){\n\t\tself::renderText(".'"User-agent: *\nAllow: /\n"'.");\n\t}\n}");
+				."\t/* @ImportAction('core','Site','index') */\n"
+				."\t/* @ImportAction('core','Site','favicon') */\n"
+				."\t/* @ImportAction('core','Site','robots') */\n}");
 			mkdir($dir=$projectPath.'models/');
 			mkdir($dir=$projectPath.'views/');
 			mkdir($dir2=$dir.'Site/');

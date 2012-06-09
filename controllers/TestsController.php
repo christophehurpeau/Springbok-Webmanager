@@ -16,6 +16,14 @@ class TestsController extends Controller{
 	}
 	
 	/** */
+	function jsToString(){
+		echo HHtml::doctype();
+		echo '<html><body>';
+		echo HHtml::jsInline('var test={ toString:function(){ return "toString works !"; } }; alert(test);');
+		echo '</body></html>';
+	}
+	
+	/** */
 	function rand(){
 		/*$array=array('a','b');
 		debugVar(array_rand($array,2));*/
@@ -249,4 +257,98 @@ class TestsController extends Controller{
 		});
 		
 	}
+	
+	
+    private static function list_vs_directAccess_2(){
+        return UProfiling::compare(999999,function(){
+        	$array=array('1111111111','2222222222');
+			return array($array[0],$array[1]);
+        },function(){
+        	$array=array('1111111111','2222222222');
+			return array(&$array[0],&$array[1]);
+        },function(){
+        	$array=array('1111111111','2222222222');
+			list($v1,$v2)=$array;
+            return array($v1,$v2);
+        },function(){
+        	$array=array('1111111111','2222222222');
+			$v1=$array[0];
+			$v2=$array[1];
+	        return array($v1,$v2);
+        },function(){
+        	$array=array('1111111111','2222222222');
+			$v1=&$array[0];
+			$v2=&$array[1];
+	        return array($v1,$v2);
+        });
+    }
+    private static function list_vs_directAccess_3(){
+        return UProfiling::compare(999999,function(){
+        	$array=array('1111111111','2222222222','3333333333');
+			return array($array[0],$array[1],$array[2]);
+        },function(){
+        	$array=array('1111111111','2222222222','3333333333');
+			return array(&$array[0],&$array[1],&$array[2]);
+        },function(){
+        	$array=array('1111111111','2222222222','3333333333');
+			list($v1,$v2,$v3)=$array;
+            return array($v1,$v2,$v3);
+        },function(){
+        	$array=array('1111111111','2222222222','3333333333');
+			$v1=$array[0];
+			$v2=$array[1];
+			$v3=$array[2];
+            return array($v1,$v2,$v3);
+        },function(){
+        	$array=array('1111111111','2222222222','3333333333');
+			$v1=&$array[0];
+			$v2=&$array[1];
+			$v3=&$array[2];
+            return array($v1,$v2,$v3);
+        });
+    }
+	
+	
+    private static function list_vs_directAccess_3_multiple(){
+        return UProfiling::compare(999999,function(){
+        	$array=array('1111111111','2222222222','3333333333');
+			return array($array[0],$array[1],$array[2],$array[0],$array[1],$array[2],$array[0],$array[1],$array[2]);
+        },function(){
+        	$array=array('1111111111','2222222222','3333333333');
+			return array(&$array[0],&$array[1],&$array[2],&$array[0],&$array[1],&$array[2],&$array[0],&$array[1],&$array[2]);
+        },function(){
+        	$array=array('1111111111','2222222222','3333333333');
+			list($v1,$v2,$v3)=$array;
+            return array($v1,$v2,$v3,$v1,$v2,$v3,$v1,$v2,$v3);
+        },function(){
+        	$array=array('1111111111','2222222222','3333333333');
+			$v1=$array[0];
+			$v2=$array[1];
+			$v3=$array[2];
+            return array($v1,$v2,$v3,$v1,$v2,$v3,$v1,$v2,$v3);
+        },function(){
+        	$array=array('1111111111','2222222222','3333333333');
+			$v1=&$array[0];
+			$v2=&$array[1];
+			$v3=&$array[2];
+            return array($v1,$v2,$v3,$v1,$v2,$v3,$v1,$v2,$v3);
+        });
+    }
+
+
+    private static function var_vs_ref(){
+        return UProfiling::compare(999999,function(){
+        	$var1=new HElementForm; $var2=new HElementForm;
+			$v1=&$var1; $v2=&$var2;
+			return array($v1,$v2);
+        },function(){
+        	$var1=new HElementForm; $var2=new HElementForm;
+			$v1=$var1; $v2=$var2;
+			return array($v1,$v2);
+        },function(){
+        	$var1=new HElementForm; $var2=new HElementForm;
+			list($v1,$v2)=array($var1,$var2);
+			return array($v1,$v2);
+        });
+    }
 }
