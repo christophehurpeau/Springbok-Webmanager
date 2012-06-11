@@ -148,9 +148,9 @@ include CORE.'cli.php';";
 			
 			mkdir($dir=$projectPath.'controllers/');
 			file_put_contents($dir.'SiteCont'.'roller.php',"<?"."php\ncl"."ass SiteContr"."oller extends Contr"."oller{\n"
-				."\t/* @ImportAction('core','Site','index') */\n"
-				."\t/* @ImportAction('core','Site','favicon') */\n"
-				."\t/* @ImportAction('core','Site','robots') */\n}");
+				."\t/* @"."ImportAction('core','Site','index') */\n"
+				."\t/* @"."ImportAction('core','Site','favicon') */\n"
+				."\t/* @"."ImportAction('core','Site','robots') */\n}");
 			mkdir($dir=$projectPath.'models/');
 			mkdir($dir=$projectPath.'views/');
 			mkdir($dir2=$dir.'Site/');
