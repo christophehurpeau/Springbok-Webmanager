@@ -203,7 +203,7 @@ include CORE.'cli.php';";
 		$project=Project::ById($id);
 		notFoundIfFalse($project);
 		self::mset($project);
-		self::set('jobs',file_exists($filename=$project->path().DS.'dev'.DS.'config'.DS.'jobs.php') ? include $filename : false);
+		self::set('jobs',file_exists($filename=$project->path().DS.'dev/config/jobs.php') ? include $filename : false);
 		self::render();
 	}
 	
@@ -214,12 +214,12 @@ include CORE.'cli.php';";
 	function job_execute(int $id,$name){
 		$project=Project::ById($id);
 		notFoundIfFalse($project);
-		$jobs=include $project->path().DS.'dev'.DS.'config'.DS.'jobs.php';
+		$jobs=include $project->path().DS.'dev/config/jobs.php';
 		if(!isset($jobs[$name])) notFound();
 		//if(!CHttpRequest::isPOST()) render('job_confirm');
 		else{
 			set_time_limit(0);
-			self::set('output',UExec::php(CORE.'cron.php',$project->path().DS.'dev'.DS,$name));
+			self::set('output',UExec::php(CORE.'cron.php',$project->path().'/dev/',$name));
 			self::mset($project,$name);
 			self::render();
 		}
