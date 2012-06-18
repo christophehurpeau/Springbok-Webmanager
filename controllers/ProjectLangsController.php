@@ -278,10 +278,7 @@ class ProjectLangsController extends AController{
 	
 	private static function _loadDbLang($projectPath,$lang){
 		$projectConfig=include $projectPath.'/config/_'.ENV.'.php';
-		return new DBSQLite(false,array(
-			'file'=>$projectConfig['db']['_lang'].$lang.'.db',
-			'user'=>'','password'=>''
-		));
+		return new DBSQLite(false,array( 'file'=>$projectConfig['db']['_lang'].$lang.'.db','flags'=>SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE ));
 	}
 	
 }
