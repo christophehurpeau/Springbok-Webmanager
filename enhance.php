@@ -7,8 +7,8 @@ define('CORE',dirname(dirname(__DIR__)).'/core/dev/');
 define('CLIBS',dirname(CORE).'/libs/dev/');
 define('ENV',include dirname(CORE).DS.'env.php');
 
-include CORE.'base'.DS.'base.php';
-include CORE.'enhancers'.DS.'EnhanceApp.php';
+include CORE.'base/base.php';
+include CORE.'enhancers/EnhanceApp.php';
 include CORE.'utils/UExec.php';
 include CORE.'utils/UEncoding.php';
 
