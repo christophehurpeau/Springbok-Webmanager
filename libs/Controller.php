@@ -53,6 +53,7 @@ class AController extends Controller{
 					if($deleteLastParam) $string=substr($string,0,strrpos($string,','));
 					return stripslashes(substr($string,0,-1));
 				},$matches[1]);
+				foreach($matches as $keyM=>$match) if(substr($match,0,7)==='plugin.') unset($matches[$keyM]);
 				$arrayStrings['all']=array_merge($arrayStrings['all'],$matches);
 				$arrayStrings[$pathname]=$matches;
 			}

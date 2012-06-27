@@ -7,8 +7,9 @@
 <?php foreach($project->langs as $lang): ?>
 	<li>{$lang->name} : <? HHtml::link('project','/projectLangs/lang/'.$project->id.'/'.$lang->name) ?>
 		 - <? HHtml::link('project singular/plural','/projectLangs/sp/'.$project->id.'/'.$lang->name) ?>
-		 - <? HHtml::link(_t('Model fields'),'/projectLangs/fields/'.$project->id.'/'.$lang->name); ?>
+		 - <? HHtml::link(_t('Models'),'/projectLangs/models/'.$project->id.'/'.$lang->name); ?>
 		 - <? HHtml::link('js','/projectLangs/js/'.$project->id.'/'.$lang->name); ?>
+		 - <? HHtml::link(_t('Plugins'),'/projectLangs/plugins/'.$project->id.'/'.$lang->name); ?>
 		 &nbsp; {iconAction 'delete','/projectLangs/delete/'.$lang->project_id.'/'.$lang->name}</li>
 <?php endforeach; ?>
 </ul></div>

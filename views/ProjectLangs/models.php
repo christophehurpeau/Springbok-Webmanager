@@ -5,7 +5,7 @@
 	{f $allStrings as $modelName=>$modelStrings}
 		<li>{link $modelName,'#',array('onclick'=>'$(this).parent().find("> div").slideToggle();return false;')}
 		<div class="hidden">
-			<?php $form=HForm::create(NULL,array('id'=>'FormLangsFields_'.$modelName,'action'=>'#')); $i=0; ?>
+			<?php $form=HForm::create(NULL,array('id'=>'FormLangsModels_'.$modelName,'action'=>'#')); $i=0; ?>
 			<ul>
 			{f $modelStrings as $filename=>$string}
 				<li>
@@ -21,7 +21,7 @@
 <?php HHtml::jsInlineStart() ?>
 S.ready(function(){
 {f $allStrings as $modelName=>$modelStrings}
-	$("#FormLangsFields_{$modelName}").ajaxForm(basedir+"projectLangs/fields_save/{=$project->id}/{$lang}/{$modelName}");
+	$("#FormLangsModels_{$modelName}").ajaxForm(basedir+"projectLangs/modelsSave/{=$project->id}/{$lang}/{$modelName}");
 {/f}
 });
 <? HHtml::jsInlineEnd() ?>

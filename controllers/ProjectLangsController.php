@@ -51,7 +51,7 @@ class ProjectLangsController extends AController{
 		if(!$dbSchema->tableExist()) $dbSchema->createTable();
 		//else $dbSchema->compareTableAndApply();
 		
-		self::set('translations',$db->doSelectListValue('SELECT s,t FROM t WHERE c=\'a\''));
+		self::set('translations',$db->doSelectListValue('SELECT s,t FROM t WHERE c=\'a\' AND s NOT LIKE "plugin%"'));
 		
 		self::set_('allStrings',$all);
 		self::set_('arrayStrings',$arrayStrings);
@@ -66,7 +66,7 @@ class ProjectLangsController extends AController{
 		notFoundIfFalse($project);
 		$projectPath=self::$workspace->projects_dir.$project->path.DS.'src';
 		$db=self::_loadDbLang($projectPath, $lang);
-		$db->doUpdate('DELETE FROM t WHERE c=\'a\'');
+		$db->doUpdate('DELETE FROM t WHERE c=\'a\' AND s NOT LIKE "plugin%"');
 		$statement=$db->getConnect()->prepare('INSERT INTO t(s,c,t) VALUES (:s,\'a\',:t)');
 		if(!empty($data)) foreach($data as $d){
 			$statement->bindValue(':s',$d['s']);
@@ -127,12 +127,11 @@ class ProjectLangsController extends AController{
 	 * id > @Required
 	 * lang > @Required
 	 */
-	function fields(int $id, string $lang){
+	function models(int $id, string $lang){
 		$project=Project::ById($id);
 		notFoundIfFalse($project);
 		$projectPath=self::$workspace->projects_dir.$project->path.DS.'src';
-		self::set_('project',$project);
-		self::set_('lang',$lang);
+		mset($project,$lang);
 		
 		$all=array();
 		if($dir=opendir(($dirname=dirname($projectPath).'/dev/models/infos/'))){
@@ -162,7 +161,7 @@ class ProjectLangsController extends AController{
 	 * id > @Required
 	 * lang > @Required
 	 */
-	function fields_save(int $id, string $lang, string $modelname,array $data){
+	function modelsSave(int $id, string $lang, string $modelname,array $data){
 		$project=Project::ById($id);
 		notFoundIfFalse($project);
 		$projectPath=self::$workspace->projects_dir.$project->path.'/src';
@@ -173,6 +172,47 @@ class ProjectLangsController extends AController{
 			if($t==='') continue;
 			if($s===0) $s='';
 			$statement->bindValue(':s',$modelname.':'.$s);
+			$statement->bindValue(':t',$t);
+			$statement->execute();
+		}
+		
+		renderText('1');
+	}
+	
+	
+	/** @ValidParams @Id @NotEmpty('lang') */
+	function plugins(int $id,$lang){
+		$project=Project::ById($id);
+		notFoundIfFalse($project);
+		mset($project,$lang);
+		$projectPath=self::$workspace->projects_dir.$project->path.DS.'src';
+		
+		$enhanceConfig=include $projectPath.'/config/enhance.php';
+		$plugins=array_map(function(&$v){return $v[1];},$enhanceConfig['plugins']);
+		
+		$db=self::_loadDbLang($projectPath, $lang);
+		
+		$translations=array();
+		foreach($plugins as $plugin){
+			$translations[$plugin]=$db->doSelectListValue('SELECT s,t FROM t WHERE c=\'a\' AND s LIKE "plugin.'.$plugin.'%"');
+		}
+		mset($translations);
+		
+		self::render();
+	}
+	
+	/** @ValidParams @Id @NotEmpty('lang','pluginName') */
+	function pluginSave(int $id,$lang,$pluginName,array $data){
+		$project=Project::ById($id);
+		notFoundIfFalse($project);
+		
+		$projectPath=self::$workspace->projects_dir.$project->path.DS.'src';
+		$db=self::_loadDbLang($projectPath, $lang);
+		$db->doUpdate('DELETE FROM t WHERE c=\'a\' AND s like '.$db->escape('plugin.'.$pluginName.'.%'));
+		$statement=$db->prepare('INSERT INTO t(s,c,t) VALUES (:s,\'a\',:t)');
+		foreach($data as $s=>$t){
+			if($t==='') continue;
+			$statement->bindValue(':s',$s);
 			$statement->bindValue(':t',$t);
 			$statement->execute();
 		}
