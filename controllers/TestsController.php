@@ -242,7 +242,7 @@ class TestsController extends Controller{
 	}
 	
 	public static function form(){
-		return UProfiling::compare(40000,function(){
+		return UProfiling::compare(10000,function(){
 			ob_start();
 			$form=HForm::create('Project',array('action','/projects/add'));
 			echo $form->input('name');
@@ -349,6 +349,28 @@ class TestsController extends Controller{
         	$var1=new HElementForm; $var2=new HElementForm;
 			list($v1,$v2)=array($var1,$var2);
 			return array($v1,$v2);
+        });
+    }
+	
+	
+    private static function h_vs_h2(){
+        return UProfiling::compare(999999,function(){
+        	$var1='test';
+			return h($var1);
+        },function(){
+        	$var1='test';
+			return h2($var1);
+        });
+    }
+	
+	private static function h_vs_h2_2(){
+        $var1=str_repeat('test',99999);
+		return UProfiling::compare(9999,function() use(&$var1){
+        	return h($var1);
+        },function() use($var1){
+        	return h($var1);
+        },function() use($var1){
+        	return h2($var1);
         });
     }
 }

@@ -63,8 +63,8 @@ class EditorController extends AController{
 				// All dirs
 				foreach($files as $file){
 					if(file_exists($root . $dir . $file) && $file != '.' && $file != '..'){
-						if(is_dir($root . $dir . $file)) $res['folders'][h2($dir.$file)]=h($file);
-						else $res['files'][h2($dir.$file)]=h($file);
+						if(is_dir($root . $dir . $file)) $res['folders'][h($dir.$file)]=h($file);
+						else $res['files'][h($dir.$file)]=h($file);
 					}
 				}
 				self::renderJSON(json_encode($res));
