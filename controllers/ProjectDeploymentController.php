@@ -47,7 +47,7 @@ class ProjectDeploymentController extends AController{
 		$deployment=Deployment::ById($id)->with('Project')->with('Server');
 		notFoundIfFalse($deployment);
 		mset($deployment);
-		self::set_('project',$deployment->project);
+		set('project',$deployment->project);
 		render();
 	}
 	
@@ -72,10 +72,11 @@ class ProjectDeploymentController extends AController{
 	/** @ValidParams @Required('id') */
 	function deploy(int $id){
 		$deployment=Deployment::ById($id)->with('Project')->with('Server');
-		notFoundIfFalse($existingDeployment);
-		self::mset($deployment);self::set_('project',$deployment->project);
+		notFoundIfFalse($deployment);
+		mset($deployment);
+		set('project',$deployment->project);
 		set('confirm',!CHttpRequest::isPOST());
-		self::render();
+		render();
 	}
 	
 }

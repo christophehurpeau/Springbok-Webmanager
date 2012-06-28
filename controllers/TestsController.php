@@ -373,4 +373,21 @@ class TestsController extends Controller{
         	return h2($var1);
         });
     }
+	
+	
+	private static function assign_test(){
+		return UProfiling::compare(999999,function(){
+			$a=10;$b=10;$c=10;$d=10;$e=10;$f=10;
+			return $a;
+        },function(){
+			$a=$b=$c=$d=$e=$f=10;
+			return $a;
+        },function(){
+			$a=10;$b=10;$c=10;$d=10;$e=10;$f=10;
+			return $a+$b;
+        },function(){
+			$a=$b=$c=$d=$e=$f=10;
+			return $a+$b;
+        });
+    }
 }
