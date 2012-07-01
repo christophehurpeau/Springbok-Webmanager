@@ -22,9 +22,9 @@ class Project extends SSqlModel{
 		return CSession::get('workspace')->projects_dir.$this->path;
 	}
 	
-	public function entrances(){
-		$entrances=include $this->path().'/src/config/enhance.php';
-		return empty($entrances["entrances"])?array():$entrances["entrances"];
+	public function entries(){
+		$config=include $this->path().'/src/config/enhance.php';
+		return empty($config["entries"])?array():$config["entries"];
 	}
 	
 	public function checkCli(){

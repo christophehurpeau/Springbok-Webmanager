@@ -38,7 +38,7 @@ class Deployment extends SSqlModel{
 		$resp=new AHDeploymentResponse($resp);
 		/* PROJECT PATH */
 		$projectPath=$this->getProjectPath();
-		$entrances=$this->project->entrances();
+		$entries=$this->project->entries();
 		
 		$sshOptions=$this->server->sshOptions();
 		
@@ -87,9 +87,9 @@ include CORE.'cli.php';");
 		$resp->push('COPY cli.php'.PHP_EOL.UExec::copyFile($tmpfname,$target.'cli.php',$sshOptions));
 		
 		$jsFilenames=array('global.js','jsapp.js');
-		foreach($this->project->entrances() as $entrance){
-			$jsFilenames[]=$entrance.'.js';
-			$options['exclude'][]='/'.$entrance.'.php';
+		foreach($this->project->entries() as $entry){
+			$jsFilenames[]=$entry.'.js';
+			$options['exclude'][]='/'.$entry.'.php';
 		}
 		foreach($jsFilenames as $jsfilename){
 			if(file_exists($filename=$projectPath.'web/js/'.$jsfilename)){
@@ -187,17 +187,17 @@ include CORE.'app.php';";
 
 		$tmpfname = tempnam('/tmp','projectstart');
 		file_put_contents($tmpfname,$indexContentStarted);
-		$entrances=$this->project->entrances();
+		$entries=$this->project->entries();
 		$sshOptions=$this->server->sshOptions();
 		$target=$this->path().DS;
 
 		$res='=> START PROJECT'.PHP_EOL
 			.UExec::copyFile($tmpfname,$target.'index.php',$sshOptions);
 		
-		if(!empty($entrances))
-			foreach($entrances as $entrance)
-				$res.=PHP_EOL.'=> START ENTRANCE: '.$entrance.PHP_EOL
-					.UExec::copyFile($tmpfname,$target.$entrance.'.php',$sshOptions);
+		if(!empty($entries))
+			foreach($entries as $entry)
+				$res.=PHP_EOL.'=> START ENTRANCE: '.$entry.PHP_EOL
+					.UExec::copyFile($tmpfname,$target.$entry.'.php',$sshOptions);
 		
 		if(file_exists($deamonsFilePath=$this->getProjectPath().'config/daemons.php')){
 			$res.=PHP_EOL.'=> START daemons'.PHP_EOL;
@@ -221,21 +221,21 @@ if(file_exists((".'$filename'."=CORE.'maintenance.php'))){
 
 		$tmpfname = tempnam('/tmp','projectstop');
 		file_put_contents($tmpfname,$indexContentStopped);
-		$entrances=$this->project->entrances();
+		$entries=$this->project->entries();
 		$sshOptions=$this->server->sshOptions();
 		$target=$this->path().DS;
 		
 		$res='=> STOP PROJECT'.PHP_EOL
 			.UExec::copyFile($tmpfname,$target.'index.php',$sshOptions);
-		if(!empty($entrances))
-			foreach($entrances as $entrance)
-				$res.=PHP_EOL.'=> STOP ENTRANCE: '.$entrance.PHP_EOL
-					.UExec::copyFile($tmpfname,$target.$entrance.'.php',$sshOptions);
+		if(!empty($entries))
+			foreach($entries as $entry)
+				$res.=PHP_EOL.'=> STOP ENTRANCE: '.$entry.PHP_EOL
+					.UExec::copyFile($tmpfname,$target.$entry.'.php',$sshOptions);
 		
 		unlink($tmpfname);
 		
 		if(file_exists($deamonsFilePath=$this->getProjectPath().'config/daemons.php')){
-			$res.=PHP_EOL.'=> KILL DAEMONS: '.$entrance.PHP_EOL.UExec::exec('killall php',$sshOptions);
+			$res.=PHP_EOL.'=> KILL DAEMONS: '.$entry.PHP_EOL.UExec::exec('killall php',$sshOptions);
 		}
 		
 		return $res;

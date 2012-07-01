@@ -136,7 +136,7 @@ class TestsController extends Controller{
 		);
 			foreach($botlist as $bot) if(stripos($_SERVER['HTTP_USER_AGENT'], $bot) !== false) return true;
 		},function(){
-			return (bool)preg_match('/'./* EVAL "'".implode('|',array(
+			return (bool)preg_match('/'./* EVAL implode('|',array(
 			'bot',
 			//'Googlebot',
 			'Google Web Preview', // Google - www.google.com
@@ -161,7 +161,7 @@ class TestsController extends Controller{
 			'Baiduspider', 'Feedfetcher-Google', 'TechnoratiSnoop',
 			'Mediapartners-Google', 'Sogou web spider',
 			'Butterfly','Twitturls','Me.dium','Twiceler'
-		))."'" /EVAL *//* HIDE */''/* /HIDE */.'/i',$_SERVER['HTTP_USER_AGENT']);
+		)) /EVAL */''.'/i',$_SERVER['HTTP_USER_AGENT']);
 			return false;
 		});
 	}

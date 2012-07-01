@@ -19,7 +19,7 @@ class AHSqlTable extends AHDbTable{
 				$url=self::$url;
 				$iRow=array_search($pkName,array_map(function(&$field){return $field['name'];},self::$qsql->getFields()));
 				$url[4].=$row[$iRow];
-				//echo ' class="pointer" onclick="S.redirect(\''.HHtml::url($url,false,true).'\')"';
+				//echo ' class="pointer" onclick="S.redirect(\''.HHtml::urlEscape($url).'\')"';
 			}else $iRow=-1;
 			echo '>';
 			foreach($component->fields as $i=>$field){
@@ -27,7 +27,7 @@ class AHSqlTable extends AHDbTable{
 				$escape=true;
 				$value=$row[$i];
 				if($i===$iRow){
-					$value='<a href="'.HHtml::url($url,false,true).'">'.$value.'</a>';
+					$value='<a href="'.HHtml::urlEscape($url).'">'.$value.'</a>';
 					$escape=false;
 				}
 				self::displayValue($field,$value,$model,$escape);

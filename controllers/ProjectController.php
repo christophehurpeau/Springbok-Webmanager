@@ -241,12 +241,12 @@ define('APP','".APP."');
 define('ENV','dev');
 
 ".'$action'."='deployment';
-".'$entrances'."=include __DIR__.DS.'src'.DS.'config'.DS.'enhance.php';
-".'$entrances=$entrances["entrances"];'."
+".'$entries'."=include __DIR__.DS.'src'.DS.'config'.DS.'enhance.php';
+".'$entries=$entries["entries"];'."
 ".'$argv'."=array(
 	'type'=>'app','workspace_id'=>".self::$workspace->id.",'deployment_id'=>".$id.",
 	'projectPath'=>__DIR__.DS.'prod'.DS,
-	'entrances'=>".'$entrances'.",
+	'entries'=>".'$entries'.",
 	'dbPath'=>__DIR__.DS.'db'.DS,
 	'options'=>array(
 		'simulation'=>false,
