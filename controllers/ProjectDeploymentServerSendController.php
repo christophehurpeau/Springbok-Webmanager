@@ -8,7 +8,7 @@ class ProjectDeploymentServerSendController extends SControllerServerSentEvents{
 	/** @ValidParams @Required('id') */
 	function deploy(int $id){
 		$deployment=Deployment::ById($id)->with('Project')->with('Server');
-		notFoundIfFalse($existingDeployment);
+		notFoundIfFalse($deployment);
 		
 		$projectPath=dirname($deployment->getProjectPath()).'/';
 		if(file_exists($projectPath.'block_enhance')){
