@@ -86,6 +86,10 @@ include CORE.'cli.php';");
 include CORE.'cli.php';");
 		$resp->push('COPY cli.php'.PHP_EOL.UExec::copyFile($tmpfname,$target.'cli.php',$sshOptions));
 		
+		
+		$webFolder=shortAlphaNumber_enc(floor((time()/60-strtotime(date('Y').'-01-01')/60)/3)); //nombres de (3) minutes depuis le début de l'année (2 minutes : on est à 4 lettres à la fin de l'année ; 3 on reste à 3)
+		
+		
 		$jsFilenames=array('global.js','jsapp.js');
 		foreach($this->project->entries() as $entry){
 			$jsFilenames[]=$entry.'.js';
@@ -94,9 +98,10 @@ include CORE.'cli.php';");
 		foreach($jsFilenames as $jsfilename){
 			if(file_exists($filename=$projectPath.'web/js/'.$jsfilename)){
 				$jsFile=file($filename);
-				$line0="(function(window,document,Object,Array,Math,undefined){window.basedir='".$this->base_url."';window.webdir=basedir+'web/';window.staticUrl=webdir+'".date('mdH')."/';window.imgdir=webdir+'img/';window.jsdir=webdir+'js/';\n";
+				$resp->push('First line : '.$jsfilename."\n".$jsFile[0]);
+				$line0="var basedir='".$this->base_url."',webdir=basedir+'web/".$webFolder."',staticUrl=webdir,imgdir=webdir+'img/',jsdir=webdir+'js/';\n";
 				if($jsFile[0]!=$line0){
-					$jsFile[0]=$line0;
+					$jsFile[0]=substr($jsFile[0],0,12)==='var basedir=' ? $line0 : $line0.$jsFile[0];
 					file_put_contents($filename,implode('',$jsFile));
 				}
 			}
@@ -118,8 +123,6 @@ include CORE.'cli.php';");
 		if($schema)
 			$resp->push('EXECUTE schema.php'.PHP_EOL
 				.UExec::exec('php '.escapeshellarg($target.'schema.php'),$options['ssh']+array('forcePseudoTty'=>true)));
-		
-		$webFolder=shortAlphaNumber_enc(floor((time()/60-strtotime(date('Y').'-01-01')/60)/3)); //nombres de (3) minutes depuis le début de l'année (2 minutes : on est à 4 lettres à la fin de l'année ; 3 on reste à 3)
 		
 		$resp->push('CREATE symb link: cd '.escapeshellarg($target.'web/').' && ln -s . "'.$webFolder.'"'.PHP_EOL
 			.UExec::exec('cd '.escapeshellarg($target.'web/').' && ln -s . "'.$webFolder.'"',$options['ssh']));

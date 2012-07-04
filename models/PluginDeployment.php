@@ -50,7 +50,7 @@ class PluginDeployment extends SSqlModel{
 	public function doDeployment($workspaceId,$simulation=false,$backup=false,$schema=false){$schema=true;
 		/* LINKED PROJECTS */
 		$linkedProjectsDeployments=Deployment::QAll()
-			->with('Project',array('with'=>array('PluginProject'=>array('fields'=>false,'forceJoin'=>true))))
+			->with('Project',array('with'=>array('PluginProject'=>array('fields'=>false,'join'=>true))))
 			->where(array('server_id'=>$this->server_id,'plgPrj.plugin_id'=>$this->plugin_id))
 			->orderBy(array('plgPrj.position'));
 
