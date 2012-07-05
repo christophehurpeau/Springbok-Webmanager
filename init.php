@@ -38,7 +38,7 @@ file_put_contents($webmanagerDir.'config/_.php',"<?php return array(
 );");
 
 file_put_contents($webmanagerDir.'config/_'.$env.'.php',"<?php return array(
-	'site_url'=>'http://localhost/springbok/webmanager/',
+	'siteUrl'=>array('index'=>'http://localhost/'),
 	'php_doc_dir'=>dirname(__DIR__).'/php-chunked-xhtml/',
 	
 	'db'=>array(
