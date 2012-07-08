@@ -60,12 +60,13 @@ class ProjectDeploymentController extends AController{
 		CSession::setFlash($deployment->start());
 		redirect('/projectDeployment/view/'.$id);
 	}
-	/** @ValidParams @Post @Required('id') */
+	/** @ValidParams @Required('id') */
 	function stop(int $id){
 		$deployment=Deployment::ById($id)->with('Project')->with('Server');
 		notFoundIfFalse($deployment);
-		CSession::setFlash($deployment->stop());
-		redirect('/projectDeployment/view/'.$id);
+		debugVar($deployment->stop());
+		//CSession::setFlash($deployment->stop());
+		/*redirect('/projectDeployment/view/'.$id);*/
 	}
 	
 	

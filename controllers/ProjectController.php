@@ -71,7 +71,7 @@ define('CORE','".dirname(CORE)."/prod/');
 define('APP', __DIR__.DS);";
 
 		$indexProdContent=$baseDefine."
-define('APP_DATE',".time()."); define('WEB_FOLDER','');
+define('APP_DATE',".time()."); define('APP_VERSION',''); define('WEB_FOLDER','');
 include CORE.'app.php';";
 
 		$schemaContent=$baseDefine."

@@ -99,7 +99,7 @@ include CORE.'cli.php';");
 			if(file_exists($filename=$projectPath.'web/js/'.$jsfilename)){
 				$jsFile=file($filename);
 				$resp->push('First line : '.$jsfilename."\n".$jsFile[0]);
-				$line0="var basedir='".$this->base_url."',webdir=basedir+'web/".$webFolder."',staticUrl=webdir,imgdir=webdir+'img/',jsdir=webdir+'js/';\n";
+				$line0="var basedir='".$this->base_url."',webdir=basedir+'web/".$webFolder."',staticUrl=webdir,imgdir=webdir+'img/',jsdir=webdir+'js/',version='".$webFolder."';\n";
 				if($jsFile[0]!=$line0){
 					$jsFile[0]=substr($jsFile[0],0,12)==='var basedir=' ? $line0 : $line0.$jsFile[0];
 					file_put_contents($filename,implode('',$jsFile));
@@ -181,11 +181,11 @@ define('APP', __DIR__.DS);";
 	}
 	
 	/* NEED : project,server */
-	public function start($scPath=NULL,$webFolder){
+	public function start($scPath=NULL,$appVersion){
 		if($scPath===NULL) throw new Exception("Error Processing Request", 1);
 		
 		$indexContentStarted="<?php".$this->baseDefine($scPath)."
-define('APP_DATE',".time().");define('WEB_FOLDER','".$webFolder."/');
+define('APP_DATE',".time().");define('APP_VERSION','".$appVersion."'); define('WEB_FOLDER','".$appVersion."/');
 include CORE.'app.php';";
 
 		$tmpfname = tempnam('/tmp','projectstart');
@@ -212,13 +212,19 @@ include CORE.'app.php';";
 	}
 	
 	/* NEED : project,server */
-	public function stop($scPath=NULL){
-		if($scPath===NULL) throw new Exception("Error Processing Request", 1);
+	public function stop($scPath=null){
+		$res='';
+		if($scPath===null){
+			$scPath=$this->server->deployCore($this,$resp=new ABasicResp(),false);
+			if($scPath===false) return $resp->getResp();
+			$res=$resp->getResp();
+		}
+		
 		
 		$indexContentStopped="<?php
 header('HTTP/1.1 503 Service Temporarily Unavailable',true,503);".$this->baseDefine($scPath)."
 if(file_exists((".'$filename'."=CORE.'maintenance.php'))){
-	define('APP_DATE',".time()."); define('WEB_FOLDER','');
+	define('APP_DATE',".time()."); define('APP_VERSION',''); define('WEB_FOLDER','');
 	include ".'$filename'.";
 }else echo '<h1>503 Service Temporarily Unavailable</h1>';";
 
