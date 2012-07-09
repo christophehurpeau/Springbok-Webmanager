@@ -48,7 +48,7 @@ class Server extends SSqlModel{
 		return UExec::exec('echo '.escapeshellarg(json_encode($versions)).' > '.escapeshellarg($this->core_dir.'/versions.json'),$this->sshOptions());
 	}
 	
-	public function deployCore(&$deployment,&$resp,$simulation=false,$force=false){
+	public function deployCore($deployment,$resp,$simulation=false,$force=false){
 		$sshOptions=$this->sshOptions();
 		
 		$blockFile=UExec::exec('cat '.escapeshellarg($this->core_dir.'/block'),$sshOptions);
