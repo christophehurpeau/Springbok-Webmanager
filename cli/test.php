@@ -1,3 +1,3 @@
 <?php
-$content.="var i18n={";
+$content.="window.i18n={";
 $next;

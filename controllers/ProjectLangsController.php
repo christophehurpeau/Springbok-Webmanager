@@ -250,7 +250,7 @@ class ProjectLangsController extends AController{
 				eval('$key='.$k.';$val='.$matches[2][$i].';');
 				$translations[$key]=$val;
 			}
-			/*preg_match('/var i18n={(.*)\n}/U',$content,$i18nMatches);
+			/*preg_match('/window.i18n={(.*)\n}/U',$content,$i18nMatches);
 			if(!empty($i18nMatches)){
 				$i18nMatches[1]=','.$i18nMatches[1];
 				preg_match_all('/([^:]*):(.*),\n/Ums',$i18nMatches[1],$matches);
@@ -283,7 +283,7 @@ class ProjectLangsController extends AController{
 		//	$content="includeCore('langs/core-".$lang."');";
 		if(file_exists($filename=CORE.'includes/js/langs/'.$lang.'.js'))
 			$content="includeCore('langs/".$lang."');";
-		$content.="i18n_lang='$lang';function _t(string){\nvar t=i18n[string];\nif(t===undefined) return string;\nreturn t;\n}\nvar i18n={\n\n";
+		$content.="S.lang='$lang';function _t(string){\nvar t=i18n[string];\nif(t===undefined) return string;\nreturn t;\n}\nwindow.i18n={\n\n";
 		if(!empty($data)) foreach($data as $d)
 			$content.=UPhp::exportString($d['s']).':'.UPhp::exportString($d['t']).',';
 		$content=substr($content,0,0-1).'};';

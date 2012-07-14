@@ -22,6 +22,10 @@ class Project extends SSqlModel{
 		return CSession::get('workspace')->projects_dir.$this->path;
 	}
 	
+	public function fullUrl(){
+		$config=$this->path().'/dev/config/_'.ENV.'.php';
+	}
+	
 	public function entries(){
 		$config=include $this->path().'/src/config/enhance.php';
 		return empty($config["entries"])?array():$config["entries"];

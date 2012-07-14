@@ -5,4 +5,5 @@
 	_t('Jobs')=>'/project/jobs/'.$project->id,
 	_t('Deployments')=>'/projectDeployment/all/'.$project->id,
 	_t('Acls')=>'/projectAcls/view/'.$project->id,
+	_t('Tests')=>'/projectTests?id='.$project->id,
 ),array('startsWith'=>true)); ?>
