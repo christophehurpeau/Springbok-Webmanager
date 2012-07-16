@@ -99,9 +99,9 @@ include CORE.'cli.php';");
 			if(file_exists($filename=$projectPath.'web/js/'.$jsfilename)){
 				$jsFile=file($filename);
 				$resp->push('First line : '.$jsfilename."\n".$jsFile[0]);
-				$line0="var basedir='".$this->base_url."',webdir=basedir+'web/".$webFolder."',staticUrl=webdir,imgdir=webdir+'img/',jsdir=webdir+'js/',version='".$webFolder."';\n";
+				$line0="'use strict';var basedir='".$this->base_url."',webdir=basedir+'web/".$webFolder."',staticUrl=webdir,imgdir=webdir+'img/',jsdir=webdir+'js/',version='".$webFolder."';\n";
 				if($jsFile[0]!=$line0){
-					$jsFile[0]=substr($jsFile[0],0,12)==='var basedir=' ? $line0 : $line0.$jsFile[0];
+					$jsFile[0]=substr($jsFile[0],0,12)==='var basedir='||substr($jsFile[0],0,12+13)==="'use strict';var basedir=" ? $line0 : $line0.$jsFile[0];
 					file_put_contents($filename,implode('',$jsFile));
 				}
 			}
@@ -128,7 +128,7 @@ include CORE.'cli.php';");
 			.UExec::exec('cd '.escapeshellarg($target.'web/').' && ln -s . "'.$webFolder.'"',$options['ssh']));
 		
 		$resp->push('Make sure the rights are good'.PHP_EOL
-			.UExec::exec('cd '.escapeshellarg($target.'web/').' && chmod -R --quiet 755 .',$options['ssh']));
+			.UExec::exec('cd '.escapeshellarg($target.'web/').' && chmod -R --quiet 775 .',$options['ssh']));
 		
 		$resp->push($this->start($scPath,$webFolder));
 		

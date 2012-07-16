@@ -14,7 +14,7 @@ class ProjectTestsController extends AController{
 	function save(int $id,array $tests){
 		$project=Project::ById($id);
 		notFoundIfFalse($project);
-		file_put_contents($project->path().'/tests.json',json_encode($tests));
+		file_put_contents($project->path().'/tests.json',str_replace('},',"},\n",json_encode($tests/*, JSON_PRETTY_PRINT*/)));
 	}
 	
 }

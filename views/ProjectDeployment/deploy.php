@@ -18,7 +18,11 @@ S.ready(function(){
 	}
 	var evtSource = new EventSource(basedir+"projectDeploymentServerSend/deploy/{=$deployment->id}");
 	evtSource.onmessage = function(m){
-		list.append($('<li class="content"/>').attr('style',m.data.sbStartsWith('WARNING')?'color:orange':(m.data.sbStartsWith('ERROR')?'color:red':'')).text(m.data));
+		var content=$('<li class="content"/>');
+		if(m.data.sbStartsWith('WARNING')) content.attr('style','color:orange');
+		else if(m.data.sbStartsWith('ERROR')) content.attr('style','color:red');
+		else content.text(m.data);
+		list.append(content);
 	};
 	evtSource.addEventListener('close',function(){
 		evtSource.close();
