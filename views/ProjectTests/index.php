@@ -2,10 +2,10 @@
 {include ../Project/_viewmenu.php}
 <div class="content">
 	<form id="FormTests" action="#" onsubmit="return false">
-		<table class="table">
+		{table class:'table'}
 			<tr class="head"><th>Url</th><th></th><th>Type de test</th><th>Informations sur le test</th><th>Résultat du test</th><th>Détails sur le résulat</th></tr>
 		{f $tests as $i=>$test}
-			<tr id="tr{=$i}">
+			<tr id="tr{=$i}"<?php if($itable++%2) echo ' class="alternate"' ?>>
 				<td class="w1">{link $test['url'],$test['url'],array('onclick'=>"$(this).parent().children('div').toggle()",'target'=>'_blank')}
 					<input name="tests[{=$i}][url]" type="hidden" value="{$test['url']}"/></td>
 				<td class="w1">{iconAction 'delete','#',array('onclick'=>"var t=$(this);t.closest('tr').remove(); t.closest('form').submit()")}</td>
@@ -17,7 +17,7 @@
 				<td class="resultTest"></td>
 			</tr>
 		{/f}
-		</table>
+		{/table}
 	</form>
 	
 	<div class="clearfix sepTop">
