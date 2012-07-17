@@ -6,7 +6,7 @@
 			<tr class="head"><th>Url</th><th></th><th>Type de test</th><th>Informations sur le test</th><th>Résultat du test</th><th>Détails sur le résulat</th></tr>
 		{f $tests as $i=>$test}
 			<tr id="tr{=$i}"<?php if($itable++%2) echo ' class="alternate"' ?>>
-				<td class="w1">{link $test['url'],$test['url'],array('onclick'=>"$(this).parent().children('div').toggle()",'target'=>'_blank')}
+				<td class="w1">{cutLink 65,$test['url'],$test['url'],array('onclick'=>"$(this).parent().children('div').toggle()",'target'=>'_blank')}
 					<input name="tests[{=$i}][url]" type="hidden" value="{$test['url']}"/></td>
 				<td class="w1">{iconAction 'delete','#',array('onclick'=>"var t=$(this);t.closest('tr').remove(); t.closest('form').submit()")}</td>
 				<td><select name="tests[{=$i}][type]" onchange="updateType({=$i},this)"><? HHtml::_option(200,'200 OK',$test['type']).HHtml::_option(301,'301 Redirection',$test['type']) ?></select></td>
