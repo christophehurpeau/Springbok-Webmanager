@@ -39,3 +39,4 @@ svn-commit*.tmp
 /config
 .git/FETCH_HEAD
 .git/ORIG_HEAD
+web/sprites
