@@ -6,10 +6,10 @@ class ProjectTestsServerSendController extends SControllerServerSentEvents{
 	}
 	
 	/** @ValidParams @Id */
-	function index(int $id){
+	function index(int $id,$entry){$entry='index';
 		$project=Project::ById($id);
 		notFoundIfFalse($project);
-		$tests=file_exists($filename=$project->path().'/tests.json') ? json_decode(file_get_contents($filename),true) : array();
+		$tests=file_exists($filename=$project->path().'/tests/'.$entry.'.json') ? json_decode(file_get_contents($filename),true) : array();
 		
 		$httpClient=new CHttpClient;
 		$httpClient->doNotfollowRedirects();
