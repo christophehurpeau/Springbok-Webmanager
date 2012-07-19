@@ -9,7 +9,7 @@
 				<td class="w1">{cutLink 65,$test['url'],$test['url'],array('onclick'=>"$(this).parent().children('div').toggle()",'target'=>'_blank')}
 					<input name="tests[{=$i}][url]" type="hidden" value="{$test['url']}"/></td>
 				<td class="w1">{iconAction 'delete','#',array('onclick'=>"var t=$(this);t.closest('tr').remove(); t.closest('form').submit()")}</td>
-				<td><select name="tests[{=$i}][type]" onchange="updateType({=$i},this)"><? HHtml::_option(200,'200 OK',$test['type']).HHtml::_option(301,'301 Redirection',$test['type']) ?></select></td>
+				<td><select name="tests[{=$i}][type]" onchange="updateType({=$i},this)"><? HHtml::_option(200,'200 OK',$test['type']).HHtml::_option(404,'404 Not Found',$test['type']).HHtml::_option(301,'301 Redirection',$test['type']) ?></select></td>
 				<td>
 					Contient :<input name="tests[{=$i}][content]" value="{=?e $test['content'] : ''}"/>
 				</td>
@@ -80,7 +80,7 @@ S.ready(function(){
 		table.append($('<tr id="tr'+(++i)+'"/>').append(
 			$('<td class="w1"/>').append($('<a target="_blank" onclick="$(this).parent().children(\'div\').toggle()"/>').text(url).attr('href',url),$('<input name="tests['+i+'][url]" type="hidden"/>').attr('value',url)),
 			$('<td/>'),
-			$('<td/>').html('<select name="tests['+i+'][type]"><option value="200">200 OK</option><option value="301">301 Redirection</option></select>'),
+			$('<td/>').html('<select name="tests['+i+'][type]"><option value="200">200 OK</option><option value="301">301 Redirection</option><option value="404">404 Not Found</option></select>'),
 			$('<td/>'),
 			$('<td/>'),
 			$('<td/>')
