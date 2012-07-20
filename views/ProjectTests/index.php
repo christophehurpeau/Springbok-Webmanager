@@ -2,7 +2,7 @@
 {include ../Project/_viewmenu.php}
 
 <div class="content">
-	{if!e $entries}<? HHtml::select($entries,array('onchange'=>"S.reload('?entry='+this.value)",'selectedText'=>$entry)) ?>{/if}
+	{if!e $entries}<? HHtml::select(array_combine($entries,$entries),array('onchange'=>"S.redirect('?id=".$project->id."&entry='+this.value)",'selectedText'=>$entry)) ?>{/if}
 	<form id="FormTests" action="#" onsubmit="return false">
 		{table class:'table'}
 			<tr class="head"><th>Url</th><th></th><th style="width:130px">Type de test</th><th>Informations sur le test</th><th>Résultat du test</th><th>Détails sur le résulat</th></tr>
@@ -43,7 +43,7 @@
 			return;
 		}
 		$('#FormTests .resultTest').html('');
-		var evtSource = new EventSource(basedir+"projectTestsServerSend/?id={=$project->id}");
+		var evtSource = new EventSource(basedir+"projectTestsServerSend/?id={=$project->id}&entry={=$entry}");
 		evtSource.onmessage = function(m){
 			var data=$.parseJSON(m.data),tr=$('#tr'+data.i);
 			tr.children('td:eq(4)').html('<span class="icon '+(data.success?'tick':'cross')+'"></span> '+data.status);
