@@ -128,7 +128,7 @@ include CORE.'cli.php';");
 			.UExec::exec('cd '.escapeshellarg($target.'web/').' && ln -s .'.($webFolder[0]==='-'?' --':'').' "'.$webFolder.'"',$options['ssh']));
 		
 		$resp->push('Make sure the rights are good'.PHP_EOL
-			.UExec::exec('cd '.escapeshellarg($target.'web/').' && chmod -R --quiet 775 .',$options['ssh']));
+			.UExec::exec('cd '.escapeshellarg($target).' && chmod -R --quiet 775 web/ controllers* views* config/ helpers/ libs/ models/',$options['ssh']));
 		
 		$resp->push($this->start($scPath,$webFolder));
 		

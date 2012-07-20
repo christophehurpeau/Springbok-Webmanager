@@ -98,6 +98,10 @@ class Server extends SSqlModel{
 			$options=array('simulation'=>$simulation,'exclude'=>array('.svn/','/enhance_def.php','/pull.php','/enhance_cli.php','/enhance_v2.php'),'ssh'=>$sshOptions);
 			$resp->push("DEPLOY CORE: Libs\n".UExec::rsync(dirname(CORE).'/libs/',$this->core_dir.'/libs/',$options));
 			$resp->push("DEPLOY CORE: Prod\n".UExec::rsync(dirname(CORE).'/prod/',$this->core_dir.DS.$scPath.DS,$options));
+		
+			$resp->push('Make sure the rights are good'.PHP_EOL
+				.UExec::exec('cd '.escapeshellarg($this->core_dir).' && chmod -R --quiet 775 libs/ '.$scPath.DS,$options['ssh']));
+		
 			
 			foreach($versions as &$v)
 				if(!empty($v[1]) && false!==($key=array_search($deployment->path,$v[1]))){
