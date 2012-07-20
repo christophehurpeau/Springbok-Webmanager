@@ -2,18 +2,25 @@
 Controller::$defaultLayout='project';
 class ProjectTestsController extends AController{
 	/** @ValidParams @Id */
-	function index(int $id,$entry){
+	function index(int $id,$entry,$env){
 		$project=Project::ById($id);
 		notFoundIfFalse($project);
 		if(empty($entry)) $entry='index';
+		if(empty($env)) $env=ENV;
+		
 		$tests=file_exists($filename=$project->path().'/tests/'.$entry.'.json') ? json_decode(file_get_contents($filename),true) : array();
+		
 		$entries=$project->entries();
 		if(!empty($entries)) array_unshift($entries,'index');
+		
 		$environments=glob(($configPath=$project->path().'/src/config/').'_*.php');
 		$lenConfigPath=strlen($configPath);
 		unset($environments[0]);
 		$environments=array_map(function($e) use($lenConfigPath){return substr($e,$lenConfigPath+1,-4); },$environments);
-		mset($project,$tests,$entries,$entry,$environments);
+		
+		set('envBaseUrl',$project->entryBaseUrl($env,$entry));
+		
+		mset($project,$tests,$entries,$entry,$environments,$env);
 		render();
 	}
 	

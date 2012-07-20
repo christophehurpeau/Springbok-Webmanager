@@ -14,8 +14,7 @@ class ProjectTestsServerSendController extends SControllerServerSentEvents{
 		$httpClient=new CHttpClient;
 		$httpClient->doNotfollowRedirects();
 		
-		$envConfig=include $projectPath.'/src/config/_'.$env.'.php';
-		$baseurl=rtrim($envConfig['siteUrl'][$entry],'/').'/';
+		$baseurl=$project->entryBaseUrl($env,$entry);
 		
 		foreach($tests as $i=>$test){
 			try{

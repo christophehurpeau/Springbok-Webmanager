@@ -31,6 +31,11 @@ class Project extends SSqlModel{
 		return empty($config["entries"])?array():$config["entries"];
 	}
 	
+	public function entryBaseUrl($env,$entry){
+		$envConfig=include $this->path().'/src/config/_'.$env.'.php';
+		return rtrim($envConfig['siteUrl'][$entry],'/').'/';
+	}
+	
 	public function checkCli(){
 		if(!file_exists(($devconfig=$this->path().'/dev/config/_'.ENV.'.php'))){
 			if(!file_exists($dirname=dirname($devconfig))) mkdir($dirname,0775,true);
