@@ -14,7 +14,7 @@ class ProjectTestsController extends AController{
 	}
 	
 	/** @ValidParams @Id */
-	function save(int $id,array $tests){
+	function save(int $id,array $tests){$entry='index';
 		$project=Project::ById($id);
 		notFoundIfFalse($project);
 		file_put_contents($project->path().'/tests/'.$entry.'.json',str_replace('},',"},\n",json_encode($tests/*, JSON_PRETTY_PRINT*/)));
