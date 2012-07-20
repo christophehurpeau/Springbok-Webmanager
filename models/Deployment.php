@@ -125,15 +125,15 @@ include CORE.'cli.php';");
 				.UExec::exec('php '.escapeshellarg($target.'schema.php'),$options['ssh']+array('forcePseudoTty'=>true)));
 		
 		$resp->push('CREATE symb link: cd '.escapeshellarg($target.'web/').' && ln -s . "'.$webFolder.'"'.PHP_EOL
-			.UExec::exec('cd '.escapeshellarg($target.'web/').' && ln -s . "'.$webFolder.'"',$options['ssh']));
+			.UExec::exec('cd '.escapeshellarg($target.'web/').' && ln -s .'.($webFolder[0]==='-'?' --':'').' "'.$webFolder.'"',$options['ssh']));
 		
 		$resp->push('Make sure the rights are good'.PHP_EOL
 			.UExec::exec('cd '.escapeshellarg($target.'web/').' && chmod -R --quiet 775 .',$options['ssh']));
 		
 		$resp->push($this->start($scPath,$webFolder));
 		
-		$resp->push('Delete CACHE files'.PHP_EOL
-			.UExec::exec('cd '.escapeshellarg($target.'data/').' && rm -f cache/* ; rm -f cache/*/* ; rm -f elementsCache/* ; rm -f elementsCache/*/*',$options['ssh']));
+		//$resp->push('Delete CACHE files'.PHP_EOL
+		//	.UExec::exec('cd '.escapeshellarg($target.'data/').' && rm -f cache/* ; rm -f cache/*/* ; rm -f elementsCache/* ; rm -f elementsCache/*/*',$options['ssh']));
 		
 		
 		/* UPDATE CRON */

@@ -16,7 +16,6 @@ class ProjectTestsServerSendController extends SControllerServerSentEvents{
 		
 		foreach($tests as $i=>$test){
 			try{
-				CLogger::get('projectTests')->log($test['url'].(strpos($test['url'],'?')!==false?'?':'&').'springbokNoEnhance=true&springbokNoDevBar=true');
 				$httpClient->get($test['url'].(strpos($test['url'],'?')!==false?'?':'&').'springbokNoEnhance=true&springbokNoDevBar=true');
 			}catch(HttpClientError $hce){}
 			$status=$httpClient->getStatus();
