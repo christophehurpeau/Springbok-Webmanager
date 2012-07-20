@@ -2,7 +2,8 @@
 {include ../Project/_viewmenu.php}
 
 <div class="content">
-	{if!e $entries}<? HHtml::select(array_combine($entries,$entries),array('onchange'=>"S.redirect('?id=".$project->id."&entry='+this.value)",'selectedText'=>$entry)) ?>{/if}
+	{if!e $entries}<? HHtml::select(array_combine($entries,$entries),array('onchange'=>"S.redirect('?id=".$project->id."&entry='+this.value)",'selected'=>$entry)) ?>{/if}
+	{if!e $environments}<? HHtml::select(array_combine($environments,$environments),array('id'=>'SelectEnv','selected'=>ENV)) ?>{/if}
 	<form id="FormTests" action="#" onsubmit="return false">
 		{table class:'table'}
 			<tr class="head"><th>Url</th><th></th><th style="width:130px">Type de test</th><th>Informations sur le test</th><th>Résultat du test</th><th>Détails sur le résulat</th></tr>
@@ -43,7 +44,7 @@
 			return;
 		}
 		$('#FormTests .resultTest').html('');
-		var evtSource = new EventSource(basedir+"projectTestsServerSend/?id={=$project->id}&entry={=$entry}");
+		var evtSource = new EventSource(basedir+"projectTestsServerSend/?id={=$project->id}&entry={=$entry}&env="+$('#SelectEnv').val());
 		evtSource.onmessage = function(m){
 			var data=$.parseJSON(m.data),tr=$('#tr'+data.i);
 			tr.children('td:eq(4)').html('<span class="icon '+(data.success?'tick':'cross')+'"></span> '+data.status);

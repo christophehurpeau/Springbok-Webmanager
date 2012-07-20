@@ -5,18 +5,21 @@ class ProjectTestsServerSendController extends SControllerServerSentEvents{
 		AController::beforeDispatch();
 	}
 	
-	/** @ValidParams @Id */
-	function index(int $id,$entry){
+	/** @ValidParams @Id @NotEmpty('entry','env')*/
+	function index(int $id,$entry,$env){
 		$project=Project::ById($id);
 		notFoundIfFalse($project);
-		$tests=file_exists($filename=$project->path().'/tests/'.$entry.'.json') ? json_decode(file_get_contents($filename),true) : array();
+		$tests=file_exists($filename=($projectPath=$project->path()).'/tests/'.$entry.'.json') ? json_decode(file_get_contents($filename),true) : array();
 		
 		$httpClient=new CHttpClient;
 		$httpClient->doNotfollowRedirects();
 		
+		$envConfig=include $projectPath.'/src/config/_'.$env.'.php';
+		$baseurl=rtrim($envConfig['siteUrl'][$entry],'/').'/';
+		
 		foreach($tests as $i=>$test){
 			try{
-				$httpClient->get($test['url'].(strpos($test['url'],'?')!==false?'?':'&').'springbokNoEnhance=true&springbokNoDevBar=true');
+				$httpClient->get($baseurl.ltrim($test['url'],'/').(strpos($test['url'],'?')===false?'?':'&').'springbokNoEnhance=true&springbokNoDevBar=true');
 			}catch(HttpClientError $hce){}
 			$status=$httpClient->getStatus();
 			

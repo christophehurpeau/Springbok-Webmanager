@@ -9,7 +9,11 @@ class ProjectTestsController extends AController{
 		$tests=file_exists($filename=$project->path().'/tests/'.$entry.'.json') ? json_decode(file_get_contents($filename),true) : array();
 		$entries=$project->entries();
 		if(!empty($entries)) array_unshift($entries,'index');
-		mset($project,$tests,$entries,$entry);
+		$environments=glob(($configPath=$project->path().'/src/config/').'_*.php');
+		$lenConfigPath=strlen($configPath);
+		unset($environments[0]);
+		$environments=array_map(function($e) use($lenConfigPath){return substr($e,$lenConfigPath+1,-4); },$environments);
+		mset($project,$tests,$entries,$entry,$environments);
 		render();
 	}
 	
