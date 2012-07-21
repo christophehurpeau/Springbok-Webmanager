@@ -70,7 +70,7 @@ S.ready(function(){
 		connectWith: ".connectedSortable",
 		update:function(){ form.submit(); }
 	}).disableSelection();
-	form.ajaxForm("<? HHtml::urlEscape('/projectTests/save/'.$project->id) ?>");
+	form.ajaxForm("<? HHtml::urlEscape('/projectTests/save/'.$project->id.'/'.$entry) ?>");
 	
 	form.on('change','input,select',function(){form.submit()});
 	
