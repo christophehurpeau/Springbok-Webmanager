@@ -3,7 +3,7 @@
 <div class="variable padding">
 	<h1>{$layout_title}</h1>
 	<? HMenu::top(array(
-		_t('Infos')=>array('url'=>'/core','startsWith'=>false),
+		_t('Infos')=>array('/core','startsWith'=>false),
 		_t('Langs')=>'/core/langs'
 	),array('startsWith'=>true)); ?>
 	
