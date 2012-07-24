@@ -22,4 +22,6 @@ class DevtoolsController extends Controller{
 	function jqueryui(){
 		self::render();
 	}
+	
+	/* @SimpleAction('css') */
 }
