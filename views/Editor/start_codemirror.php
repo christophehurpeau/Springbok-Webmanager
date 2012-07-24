@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="UTF-8">
+		<? HHtml::metaCharset() ?>
 		<title>Editor</title>
 		<?php HHtml::cssLink(); HHTml::jsLink(); HHtml::jsI18n(); HHtml::jsLink('/editor_codemirror'); ?>
 	</head>
