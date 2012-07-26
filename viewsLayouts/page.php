@@ -1,5 +1,5 @@
 <?php new AjaxBaseView($layout_title) ?>
-<header class="clearfix">
+<header>
 	<div id="logo">Springbok <b>WebManager</b><br />{if CSession::exists('workspace')}<?= CSession::get('workspace')->name ?>{/if}</div>
 	<? HMenu::ajaxTop(array(
 		_tC('Home')=>false,
