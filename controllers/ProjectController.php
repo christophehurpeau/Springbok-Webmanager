@@ -162,7 +162,7 @@ include CORE.'cli.php';";
 				."\n\t</body>"."\n</html>");
 			
 			file_put_contents($dir.'page.php',"<?php new AjaxBaseView(".'$layout_title'.") ?>"
-				."\n<header class=\"clearfix\">\n\t<div id=\"logo\">".$projectName."</div>\n\t{menuTop 'startsWith':true"
+				."\n<header>\n\t<div id=\"logo\">".$projectName."</div>\n\t{menuTop 'startsWith':true"
 				."\n\t\t_tC('Home'):false,\n"."\t}"
 				."\n</header>\n".'{=$layout_content}'
 				."\n<footer>Version du <b><? HHtml::enhanceDate() ?></b> | <? HHtml::powered() ?></footer>");
