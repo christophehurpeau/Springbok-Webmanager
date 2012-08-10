@@ -31,6 +31,15 @@ class TestsController extends Controller{
 	}
 	
 	/** */
+	function httpClient(){
+		/*$array=array('a','b');
+		debugVar(array_rand($array,2));*/
+		$httpClient=new CHttpClient();
+		$httpClient->get('http://localhost/springbok');
+		debugVar($httpClient->getLastUrl());
+	}
+	
+	/** */
 	function testpush(){
 		/*self::allowFlush();
 		$i=10;
