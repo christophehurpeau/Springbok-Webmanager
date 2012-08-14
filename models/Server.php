@@ -48,6 +48,17 @@ class Server extends SSqlModel{
 		return UExec::exec('echo '.escapeshellarg(json_encode($versions)).' > '.escapeshellarg($this->core_dir.'/versions.json'),$this->sshOptions());
 	}
 	
+	public function findLastVersion($deployment,$resp){
+		$versions=$this->getVersions();
+		if(empty($versions)) return false;
+		$versions=json_decode($versions,true);
+		foreach($versions as &$v)
+			if(!empty($v[1]) && false!==($key=array_search($deployment->path,$v[1]))){
+				return $v[0];
+			}
+		return false;
+	}
+	
 	public function deployCore($deployment,$resp,$simulation=false,$force=false){
 		$sshOptions=$this->sshOptions();
 		

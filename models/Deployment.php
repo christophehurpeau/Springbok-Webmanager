@@ -182,7 +182,11 @@ define('APP', __DIR__.DS);";
 	
 	/* NEED : project,server */
 	public function start($scPath=NULL,$appVersion){
-		if($scPath===NULL) throw new Exception("Error Processing Request", 1);
+		if($scPath===null){
+			$scPath=$this->server->findLastVersion($this,$resp=new ABasicResp(),false);
+			if(empty($scPath)) return $resp->getResp();
+			$res=$resp->getResp();
+		}
 		
 		$indexContentStarted="<?php".$this->baseDefine($scPath)."
 define('APP_DATE',".time().");define('APP_VERSION','".$appVersion."'); define('WEB_FOLDER','".$appVersion."/');
@@ -215,8 +219,8 @@ include CORE.'app.php';";
 	public function stop($scPath=null){
 		$res='';
 		if($scPath===null){
-			$scPath=$this->server->deployCore($this,$resp=new ABasicResp(),false);
-			if($scPath===false) return $resp->getResp();
+			$scPath=$this->server->findLastVersion($this,$resp=new ABasicResp(),false);
+			if(empty($scPath)) return $resp->getResp();
 			$res=$resp->getResp();
 		}
 		
