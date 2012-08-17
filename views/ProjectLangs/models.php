@@ -18,10 +18,8 @@
 	{/f}
 	</ul>
 </div>
-<?php HHtml::jsInlineStart() ?>
-S.ready(function(){
+{jsReady}
 {f $allStrings as $modelName=>$modelStrings}
 	$("#FormLangsModels_{$modelName}").ajaxForm(basedir+"projectLangs/modelsSave/{=$project->id}/{$lang}/{$modelName}");
 {/f}
-});
-<? HHtml::jsInlineEnd() ?>
+{/jsReady}

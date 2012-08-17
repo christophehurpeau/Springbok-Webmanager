@@ -18,10 +18,8 @@
 	{/f}
 	</ul>
 </div>
-<?php HHtml::jsInlineStart() ?>
-S.ready(function(){
+{jsReady}
 {f $translations as $pluginName=>$pluginStrings}
 	$("#FormLangsPlugin_{$pluginName}").ajaxForm(basedir+"projectLangs/pluginSave/{=$project->id}/{$lang}/{$pluginName}");
 {/f}
-});
-<? HHtml::jsInlineEnd() ?>
+{/jsReady}
