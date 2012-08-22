@@ -12,10 +12,10 @@ class SshDaemon extends Daemon{
 		$server=Server::findOneById($serverId);
 		if($server===false) exit;
 		$sshOptions=$server->sshOptions($workspace->name);
-		while(true){
-			$timeStart=microtime(true);
+		//while(true){
+			//$timeStart=microtime(true);
 			UExec::createPersistantSsh($sshOptions,3600);
-			if(microtime(true) - $timeStart < 5) break;
-		}
+			//if(microtime(true) - $timeStart < 5) break;
+		//}
 	}
 }
