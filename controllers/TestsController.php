@@ -55,6 +55,21 @@ class TestsController extends Controller{
 		$db->doUpdate('SELECT SLEEP(90)');
 	}
 	
+	/** */
+	function UFileApi(){
+		UFile::rm('/var/unexistant_file');
+		/*debug*/(UFile::getContents('/etc/hosts'));
+		/*debugVar*/(UFile::getContents('/var/unexistant_file'));
+	}
+	
+	private static function getContents(){
+	 return UProfiling::compare(60000,function(){
+        	return file_get_contents('/etc/hosts');
+        },function(){
+        	return UFile::getContents('/etc/hosts');
+        });
+	}
+	
 	
     private static function shuffle(){
         return UProfiling::compare(30000,function(){
