@@ -42,8 +42,8 @@ class Deployment extends SSqlModel{
 		
 		$sshOptions=$this->server->sshOptions();
 		
-		if(CDaemons::startIfNotAlive('Ssh',$workspaceId.'-'.$this->server_id))
-			$resp->push('Daemon started.');
+		$resp->push($this->stopDaemon($workspaceId));
+		$resp->push($this->startDaemon($workspaceId));
 		
 		/* DEPLOY CORE */
 		$scPath=$this->server->deployCore($this,$resp,$simulation);
@@ -130,10 +130,10 @@ include CORE.'cli.php';");
 		$resp->push('Make sure the rights are good'.PHP_EOL
 			.UExec::exec('cd '.escapeshellarg($target).' && chmod -R --quiet 775 web/ controllers* views* config/ helpers/ libs/ models/',$options['ssh']));
 		
-		$resp->push($this->start($scPath,$webFolder));
-		
 		//$resp->push('Delete CACHE files'.PHP_EOL
 		//	.UExec::exec('cd '.escapeshellarg($target.'data/').' && rm -f cache/* ; rm -f cache/*/* ; rm -f elementsCache/* ; rm -f elementsCache/*/*',$options['ssh']));
+		
+		$resp->push($this->start($scPath,$webFolder));
 		
 		
 		/* UPDATE CRON */
@@ -168,6 +168,8 @@ include CORE.'cli.php';");
 		/* Delete old cores */
 		$this->server->removeOldCores($resp);
 		
+		$this->stopDaemon($workspaceId);
+		
 		/* Delete tmp file */
 		unlink($tmpfname);
 	}
@@ -178,6 +180,19 @@ include CORE.'cli.php';");
 define('DS', DIRECTORY_SEPARATOR);
 define('CORE','".$this->server->core_dir.DS.$scPath.DS."');
 define('APP', __DIR__.DS);";
+	}
+	
+	
+	private $daemonStarted;
+	private function startDaemon($workspaceId){
+		if(true===($resDaemon=CDaemons::startIfNotAlive('Ssh',$workspaceId.'-'.$this->server_id))){
+			$daemonStarted=true;
+			sleep(2);
+		}
+		return 'Start daemon: '.($resDaemon===true?'succeeded':$resDaemon).PHP_EOL;
+	}
+	private function stopDaemon($workspaceId){
+		return 'Kill daemon : '.(CDaemons::kill('Ssh',$workspaceId.'-'.$this->server_id)?'succeeded':'failed');
 	}
 	
 	/* NEED : project,server */
@@ -216,12 +231,15 @@ include CORE.'app.php';";
 	}
 	
 	/* NEED : project,server */
-	public function stop($scPath=null){
-		$res='';
+	public function stop($scPath=null,$workspaceId=null){
+		$res=''; $daemonStarted=false;
 		if($scPath===null){
+			if(empty($workspaceId)) return 'Deployment::stop: missing "workspaceId"';
+			$res.=$this->startDaemon($workspaceId);
+			
 			$scPath=$this->server->findLastVersion($this,$resp=new ABasicResp(),false);
 			if(empty($scPath)) return $resp->getResp();
-			$res=$resp->getResp();
+			$res.=$resp->getResp();
 		}
 		
 		
@@ -238,7 +256,7 @@ if(file_exists((".'$filename'."=CORE.'maintenance.php'))){
 		$sshOptions=$this->server->sshOptions();
 		$target=$this->path().DS;
 		
-		$res='=> STOP PROJECT'.PHP_EOL
+		$res.=PHP_EOL.'=> STOP PROJECT'.PHP_EOL
 			.UExec::copyFile($tmpfname,$target.'index.php',$sshOptions);
 		if(!empty($entries))
 			foreach($entries as $entry)
@@ -248,8 +266,10 @@ if(file_exists((".'$filename'."=CORE.'maintenance.php'))){
 		unlink($tmpfname);
 		
 		if(file_exists($deamonsFilePath=$this->getProjectPath().'config/daemons.php')){
-			$res.=PHP_EOL.'=> KILL DAEMONS: '.$entry.PHP_EOL.UExec::exec('killall php',$sshOptions);
+			//$res.=PHP_EOL.'=> KILL DAEMONS: '.$entry.PHP_EOL.UExec::exec('killall php',$sshOptions);
 		}
+
+		$this->stopDaemon($workspaceId);
 		
 		return $res;
 	}

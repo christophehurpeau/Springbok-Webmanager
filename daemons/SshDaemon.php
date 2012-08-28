@@ -14,7 +14,8 @@ class SshDaemon extends Daemon{
 		$sshOptions=$server->sshOptions($workspace->name);
 		//while(true){
 			//$timeStart=microtime(true);
-			UExec::createPersistantSsh($sshOptions,450);
+			shell_exec('killall ssh; killall ssh-agent');
+			UExec::createPersistantSsh($sshOptions,2000);
 			//if(microtime(true) - $timeStart < 5) break;
 		//}
 	}

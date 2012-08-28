@@ -57,14 +57,14 @@ class ProjectDeploymentController extends AController{
 	function start(int $id){
 		$deployment=Deployment::ById($id)->with('Project')->with('Server');
 		notFoundIfFalse($deployment);
-		CSession::setFlash($deployment->start());
+		CSession::setFlash($deployment->start(null,self::$workspace->id));
 		redirect('/projectDeployment/view/'.$id);
 	}
 	/** @ValidParams @Required('id') */
 	function stop(int $id){
 		$deployment=Deployment::ById($id)->with('Project')->with('Server');
 		notFoundIfFalse($deployment);
-		debugVar($deployment->stop());
+		debugVar($deployment->stop(null,self::$workspace->id));
 		//CSession::setFlash($deployment->stop());
 		/*redirect('/projectDeployment/view/'.$id);*/
 	}
