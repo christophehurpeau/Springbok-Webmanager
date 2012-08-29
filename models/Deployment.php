@@ -49,6 +49,9 @@ class Deployment extends SSqlModel{
 		$scPath=$this->server->deployCore($this,$resp,$simulation);
 		if($scPath===false) return;
 		
+		$resp->push($this->stopDaemon($workspaceId));
+		$resp->push($this->startDaemon($workspaceId));
+		
 		/* DO PROJECT DEPLOYMENT */
 		if (!$simulation){
 			 if ($backup){
