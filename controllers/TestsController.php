@@ -414,4 +414,22 @@ class TestsController extends Controller{
 			return $a+$b;
         });
     }
+	
+	private static function sprintf(){
+		return UProfiling::compare(999999,function(){
+			return sprintf('/^[%s]+|[%s]+$/','-','-');
+       },function(){
+			return '/^['.'-'.']+|['.'-'.']+$/';
+        });
+	}
+	
+	private static function compact(){
+		return UProfiling::compare(999999,function(){
+			$v1=1;$v2=2;
+			return compact('v1','v2');
+       },function(){
+			$v1=1;$v2=2;
+			return array('v1'=>$v1,'v2'=>$v2);
+        });
+	}
 }
