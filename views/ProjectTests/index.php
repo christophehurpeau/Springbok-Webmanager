@@ -2,6 +2,9 @@
 {include ../Project/_viewmenu.php}
 
 <div class="content">
+	<div class="floatR">
+		{link 'Lancer les tests','#',array('onclick'=>'return startTests(this)','class'=>'button')}
+	</div>
 	<?php $onChange="S.redirect('?id=".$project->id."&entry='+$('#SelectEntry').val()+'&env='+$('#SelectEnv').val())" ?>
 	{if!e $entries}<? HHtml::select(array_combine($entries,$entries),array('id'=>'SelectEntry','onchange'=>$onChange,'selected'=>$entry)) ?>{/if}
 	{if!e $environments}<? HHtml::select(array_combine($environments,$environments),array('id'=>'SelectEnv','onchange'=>$onChange,'selected'=>$env)) ?>{/if}
