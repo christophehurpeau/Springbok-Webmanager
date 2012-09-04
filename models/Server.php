@@ -107,7 +107,7 @@ class Server extends SSqlModel{
 			if(!$updateVersion) $versions[Springbok::VERSION]=array($scPath,array());
 			
 			$options=array('simulation'=>$simulation,'exclude'=>array('.svn/','/enhance_def.php','/pull.php','/enhance_cli.php','/enhance_v2.php'),'ssh'=>$sshOptions);
-			$resp->push("DEPLOY CORE: Libs\n".UExec::rsync(dirname(CORE).'/libs/',$this->core_dir.'/libs/',$options));
+			$resp->push("DEPLOY CORE: Libs\n".UExec::rsync(dirname(CORE).'/libs/prod/',$this->core_dir.'/libs/',$options));
 			$resp->push("DEPLOY CORE: Prod\n".UExec::rsync(dirname(CORE).'/prod/',$this->core_dir.DS.$scPath.DS,$options));
 		
 			$resp->push('Make sure the rights are good'.PHP_EOL

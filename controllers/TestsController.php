@@ -57,6 +57,8 @@ class TestsController extends Controller{
 	
 	/** */
 	function UFileApi(){
+		echo $test;
+		unlink('/var/unexistant_file');
 		UFile::rm('/var/unexistant_file');
 		/*debug*/(UFile::getContents('/etc/hosts'));
 		/*debugVar*/(UFile::getContents('/var/unexistant_file'));

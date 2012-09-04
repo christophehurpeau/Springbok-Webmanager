@@ -26,7 +26,7 @@ class Deployment extends SSqlModel{
 	}
 	
 	
-	public function &getProjectPath(){
+	public function getProjectPath(){
 		$projectPath=$this->project->path().'/prod/';
 		if(!is_dir($projectPath))
 			throw new Exception('Project path does not exists: '.$projectPath);
@@ -182,6 +182,7 @@ include CORE.'cli.php';");
 		return "
 define('DS', DIRECTORY_SEPARATOR);
 define('CORE','".$this->server->core_dir.DS.$scPath.DS."');
+define('CLIBS','".$this->server->core_dir."/libs/');
 define('APP', __DIR__.DS);";
 	}
 	

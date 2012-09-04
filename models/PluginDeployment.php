@@ -48,6 +48,7 @@ class PluginDeployment extends SSqlModel{
 	
 	/** Need : server,plugin=>{with:PluginPath},pluginPathDeployment */
 	public function doDeployment($workspaceId,$simulation=false,$backup=false,$schema=false){$schema=true;
+		throw new Exception();
 		/* LINKED PROJECTS */
 		$linkedProjectsDeployments=Deployment::QAll()
 			->with('Project',array('with'=>array('PluginProject'=>array('fields'=>false,'join'=>true))))
@@ -116,11 +117,11 @@ include CORE.'plugin.php';");
 		return $res;
 	}
 
-
+/*
 	private function baseDefine($scPath){
 		return "
 define('DS', DIRECTORY_SEPARATOR);
 define('CORE','".$this->server->core_dir.DS.$scPath.DS."');
 define('APP', __DIR__.DS);";
-	}
+	}*/
 }

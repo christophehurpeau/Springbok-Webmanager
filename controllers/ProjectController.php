@@ -68,6 +68,7 @@ include CORE.'cli.php';";
 		$baseDefine="<?php
 define('DS', DIRECTORY_SEPARATOR);
 define('CORE','".dirname(CORE)."/prod/');
+define('CLIBS','".dirname(CORE)."/libs/prod/');
 define('APP', __DIR__.DS);";
 
 		$indexProdContent=$baseDefine."

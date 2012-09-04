@@ -51,6 +51,7 @@ class Project extends SSqlModel{
 		return "<?php
 define('DS', DIRECTORY_SEPARATOR);
 define('CORE','".dirname(CORE).'/dev/'."');
+define('CLIBS','".dirname(CORE)."/libs/dev/');
 define('APP', __DIR__.'/dev/');";
 	}
 }

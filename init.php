@@ -8,6 +8,7 @@ $coreDir=$baseDir.'core/dev/';
 file_put_contents($webmanagerDir.'cli.php',"<?php
 define('DS', DIRECTORY_SEPARATOR);
 define('CORE','".$coreDir."');
+define('CLIBS','".$baseDir.".'core/libs/dev/');
 define('APP', __DIR__.DS.'dev'.DS);
 ".'unset($argv[0]);
 $action=array_shift($argv);'."
