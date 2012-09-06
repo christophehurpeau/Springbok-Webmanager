@@ -30,9 +30,12 @@ class Project extends SSqlModel{
 		$config=include $this->path().'/src/config/enhance.php';
 		return empty($config["entries"])?array():$config["entries"];
 	}
+	public function envConfig($env){
+		return include $this->path().'/src/config/_'.$env.'.php';
+	}
 	
 	public function entryBaseUrl($env,$entry){
-		$envConfig=include $this->path().'/src/config/_'.$env.'.php';
+		$envConfig=$this->envConfig($env);
 		return rtrim($envConfig['siteUrl'][$entry],'/').'/';
 	}
 	

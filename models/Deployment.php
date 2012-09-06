@@ -39,6 +39,7 @@ class Deployment extends SSqlModel{
 		/* PROJECT PATH */
 		$projectPath=$this->getProjectPath();
 		$entries=$this->project->entries();
+		$envConfig=$this->project->envConfig($this->server->env_name);
 		
 		$sshOptions=$this->server->sshOptions();
 		
@@ -102,7 +103,9 @@ include CORE.'cli.php';");
 			if(file_exists($filename=$projectPath.'web/js/'.$jsfilename)){
 				$jsFile=file($filename);
 				$resp->push('First line : '.$jsfilename."\n".$jsFile[0]);
-				$line0="'use strict';var basedir='".$this->base_url."',staticUrl=basedir+'web/',webUrl=staticUrl+'".$webFolder."/',imgUrl=webUrl+'img/',version='".$webFolder."';\n";
+				$line0="'use strict';var basedir='".$this->base_url."',staticUrl=basedir+'web/',webUrl=staticUrl+'".$webFolder."/',imgUrl=webUrl+'img/',version='".$webFolder."'";
+				if($jsfilename==='admin.js') $line0.=',entryUrl='.json_encode($envConfig['siteUrl'],JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
+				$line0.=";\n";
 				if($jsFile[0]!=$line0){
 					$jsFile[0]=substr($jsFile[0],0,12)==='var basedir='||substr($jsFile[0],0,12+13)==="'use strict';var basedir=" ? $line0 : $line0.$jsFile[0];
 					file_put_contents($filename,implode('',$jsFile));

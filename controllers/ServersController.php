@@ -66,6 +66,7 @@ class ServersController extends AController{
 			
 			$server->id=$id;
 			if(!empty($server->pwd)) $server->pwd=USecure::encryptAES($server->pwd);
+			else unset($server->pwd);
 			$server->update();
 			self::redirect('/servers');
 		}
