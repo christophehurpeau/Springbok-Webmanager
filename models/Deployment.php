@@ -126,9 +126,10 @@ include CORE.'cli.php';");
 				.UExec::rsync($dbPath,$target.'db/',$options));
 		}
 		
-		if($schema)
-			$resp->push('EXECUTE schema.php'.PHP_EOL
-				.UExec::exec('php '.escapeshellarg($target.'schema.php'),$options['ssh']+array('forcePseudoTty'=>true)));
+		$resp->push('EXECUTE schema.php'.PHP_EOL
+			.($resSchema=UExec::exec('php '.escapeshellarg($target.'schema.php'),$options['ssh']+array('forcePseudoTty'=>true))));
+		$shemaProcessSuccess=('Schema processed'===$resSchema);
+		
 		
 		$resp->push('CREATE symb link: cd '.escapeshellarg($target.'web/').' && ln -s . "'.$webFolder.'"'.PHP_EOL
 			.UExec::exec('cd '.escapeshellarg($target.'web/').' && ln -s .'.($webFolder[0]==='-'?' --':'').' "'.$webFolder.'"',$options['ssh']));
@@ -139,7 +140,7 @@ include CORE.'cli.php';");
 		//$resp->push('Delete CACHE files'.PHP_EOL
 		//	.UExec::exec('cd '.escapeshellarg($target.'data/').' && rm -f cache/* ; rm -f cache/*/* ; rm -f elementsCache/* ; rm -f elementsCache/*/*',$options['ssh']));
 		
-		$resp->push($this->start($scPath,$webFolder));
+		if($shemaProcessSuccess) $resp->push($this->start($scPath,$webFolder));
 		
 		
 		/* UPDATE CRON */
