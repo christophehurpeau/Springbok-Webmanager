@@ -86,7 +86,7 @@ include CORE.'cli.php';");
 		
 		
 		file_put_contents($tmpfname,"<?php".$baseDefine."
-".'$action'."=".'$argv[1];'."
+".'unset($argv[0]); $action'."=".'array_shift($argv);'."
 include CORE.'cli.php';");
 		$resp->push('COPY cli.php'.PHP_EOL.UExec::copyFile($tmpfname,$target.'cli.php',$sshOptions));
 		
