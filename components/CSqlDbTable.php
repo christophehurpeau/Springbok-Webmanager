@@ -14,7 +14,7 @@ class ACSqlDbTable extends CTable{
 	
 	public function execute(){
 		if($this->executed===true) return; $this->executed=true;
-		$this->pagination=CPagination::create($this->query)->pageSize(25)->execute($this);
+		$this->pagination=CPagination::_create($this->query)->pageSize(25)->execute($this);
 		if($this->filter === 0 && $this->filter && empty($_POST)) $this->filter=false;
 		
 		if($this->pagination->getTotalResults() !== 0 || $this->filter){
