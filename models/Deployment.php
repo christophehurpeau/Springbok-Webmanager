@@ -25,6 +25,10 @@ class Deployment extends SSqlModel{
 		return $this->server->projects_dir.$this->path;
 	}
 	
+	public function name(){
+		return $this->server->host.':'.$this->path();
+	}
+	
 	
 	public function getProjectPath(){
 		$projectPath=$this->project->path().'/prod/';
@@ -73,7 +77,8 @@ include CORE.'cli.php';";
 		$currentLocalDbVersion=UFile::getContents($projectBasePath.'currentDbVersion');
 		$currentServerDbVersion=UExec::exec('cd / && cat '.escapeshellarg($target.'currentDbVersion'),$sshOptions);
 		$resp->push('DB Versions : server='.$currentServerDbVersion.', local='.$currentLocalDbVersion);
-		
+		$stopProject=$currentServerDbVersion != $currentLocalDbVersion || (isset($_REQUEST['projectStop']) && $_REQUEST['projectStop']=='1');
+		$resp->push('stop : '.($stopProject?'true':'false'));
 		
 		/* DEPLOY CORE */
 		$scPath=$this->server->deployCore($this,$resp,$simulation);
@@ -158,7 +163,7 @@ include CORE.'cli.php';");
 		$resp->push('SYNC dbEvolutions dir'.PHP_EOL.UExec::rsync($projectBasePath.'dbEvolutions',$target.'dbEvolutions/',$options));
 		
 		
-		if($currentServerDbVersion != $currentLocalDbVersion) $resp->push($this->stop($scPath));
+		if($stopProject) $resp->push($this->stop($scPath));
 		
 		$options['exclude']=array('logs/','web/files/*','db','data','.htaccess','authfile','/schema.php','/job.php','/cli.php','/index.php','/dbEvolutions','/currentDbVersion','/lastWebFolder','/web/'.$lastWebFolder);
 		/*$res.=UExec::rsync(dirname(CORE).DS.'prod'.DS,$this->server->core_dir.DS.$sc->path.DS,$options);*/

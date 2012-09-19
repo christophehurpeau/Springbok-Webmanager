@@ -1,4 +1,4 @@
-<?php new AjaxContentView(_t('Project:').' '.$deployment->project->name,'project'); ?>
+<?php new AjaxContentView(_t('Project:').' '.$deployment->project->name." - DEPLOY : ".$deployment->name(),'project'); ?>
 {include _viewmenu.php}
 <div class="content">
 <?php /* HHtml::tag('pre',array(),$output) */ ?>
@@ -15,7 +15,7 @@ if(!window.EventSource){
 	alert('Votre navigateur n\'est pas compatible avec EventSource');
 	return;
 }
-var evtSource = new EventSource(basedir+"projectDeploymentServerSend/deploy/{=$deployment->id}");
+var evtSource = new EventSource(basedir+"projectDeploymentServerSend/deploy/{=$deployment->id}{? isset($_REQUEST['projectStop']) && $_REQUEST['projectStop']=='1' => '?projectStop=1' : ''}");
 evtSource.onmessage = function(m){
 	var content=$('<li class="content"/>');
 	if(m.data.sbStartsWith('WARNING')) content.attr('style','color:orange');
