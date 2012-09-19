@@ -37,14 +37,43 @@ class Deployment extends SSqlModel{
 	public function doDeployment($workspaceId,$resp=null,$simulation=false,$backup=false,$schema=false){$schema=true;
 		$resp=new AHDeploymentResponse($resp);
 		/* PROJECT PATH */
+		$projectBasePath=rtrim($this->project->path(),'/').'/';
 		$projectPath=$this->getProjectPath();
 		$entries=$this->project->entries();
 		$envConfig=$this->project->envConfig($this->server->env_name);
+		$target=rtrim($this->path(),'/').DS;
 		
+		$resp->push('Hi ! Deployment : '.$projectBasePath.' ===> '.$this->server->host.':'.$target);
+		
+		/* Pre - deployment */
+		copy($projectBasePath.'currentDbVersion',$projectPath.'currentDbVersion');
+		copy($projectBasePath.'dbVersions',$projectPath.'dbVersions');
+		
+		$baseDefine="<?php
+define('DS', DIRECTORY_SEPARATOR);
+define('CORE','".dirname(CORE)."/prod/');
+define('CLIBS','".dirname(CORE)."/libs/prod/');
+define('APP', __DIR__.DS);";
+
+		$schemaContent=$baseDefine."
+".'$action'."='schema';
+include CORE.'cli.php';";
+		file_put_contents($projectPath.'schema.php',$schemaContent);
+		
+		$resp->push($resSchemaProcess=UExec::exec('php '.escapeshellarg($projectPath.'schema.php')));
+		if('Schema processed'!==substr($resSchemaProcess,-strlen('Schema processed'))) return false;
+		
+		/* Prepare SSH */
 		$sshOptions=$this->server->sshOptions();
 		
 		$resp->push($this->stopDaemon($workspaceId));
 		$resp->push($this->startDaemon($workspaceId));
+		
+		// Get current db version
+		$currentLocalDbVersion=UFile::getContents($projectBasePath.'currentDbVersion');
+		$currentServerDbVersion=UExec::exec('cd / && cat '.escapeshellarg($target.'currentDbVersion'),$sshOptions);
+		$resp->push('DB Versions : server='.$currentServerDbVersion.', local='.$currentLocalDbVersion);
+		
 		
 		/* DEPLOY CORE */
 		$scPath=$this->server->deployCore($this,$resp,$simulation);
@@ -57,19 +86,17 @@ class Deployment extends SSqlModel{
 		if (!$simulation){
 			 if ($backup){
 			 	$options=array('simulation'=>$simulation,'exclude'=>NULL,'ssh'=>$sshOptions); // --exclude .* ?
-			 	$target = $backup.DS;
-				$resp->push('BACKUP'.PHP_EOL.UExec::rsync($projectPath,$target,$options));
+			 	$targetBackup = $backup.DS;
+				$resp->push('BACKUP'.PHP_EOL.UExec::rsync($projectPath,$targetBackup,$options));
 			 }
 		}
 		
-		$target=$this->path().DS;
 		$baseDefine=$this->baseDefine($scPath);
 
 		
 		/* -- -- -- */
 		
-		$options=array('simulation'=>$simulation,'ssh'=>$sshOptions,
-				'exclude'=>array('logs/','web/files/*','db','data','.htaccess','authfile','/schema.php','/job.php','/cli.php','/index.php'));
+		$options=array('simulation'=>$simulation,'ssh'=>$sshOptions,'exclude'=>array());
 		
 		
 		$tmpfname = tempnam('/tmp','projectdepl');
@@ -91,8 +118,13 @@ include CORE.'cli.php';");
 		$resp->push('COPY cli.php'.PHP_EOL.UExec::copyFile($tmpfname,$target.'cli.php',$sshOptions));
 		
 		
-		$webFolder=shortAlphaNumber_enc(floor((time()/60-strtotime(date('Y').'-01-01')/60)/3)); //nombres de (3) minutes depuis le début de l'année (2 minutes : on est à 4 lettres à la fin de l'année ; 3 on reste à 3)
 		
+		/* Prepare content */
+		
+		$lastWebFolder=UExec::exec('cd / && cat '.escapeshellarg($target.'lastWebFolder'),$sshOptions);
+		
+		$webFolder=shortAlphaNumber_enc(floor((time()/60-strtotime(date('Y').'-01-01')/60)/3)); //nombres de (3) minutes depuis le début de l'année (2 minutes : on est à 4 lettres à la fin de l'année ; 3 on reste à 3)
+		if(in_array($webFolder,array('css','js','img','ie'))) $webFolder.='_';
 		
 		$jsFilenames=array('global.js','jsapp.js');
 		foreach($this->project->entries() as $entry){
@@ -113,22 +145,28 @@ include CORE.'cli.php';");
 			}
 		}
 		
-		$resp->push($this->stop($scPath));
+		$options['exclude']=array('.svn/');
+		if(is_dir($dbPath=$projectBasePath.'db/'))
+			$resp->push('SYNC DB DIR'.PHP_EOL.UExec::rsync($dbPath,$target.'db/',$options));
+		/*if(is_dir($soapPath=$projectBasePath.'data/soap/')){
+			$options['exclude']=array('.svn/','*.cache');
+			$resp->push('SYNC DB DIR'.PHP_EOL.UExec::rsync($soapPath,$target.'data/soap/',$options));
+		}*/
 		
-		$resp->push('SYNC'.PHP_EOL
+		$options['exclude']=array('.svn/');
+		
+		$resp->push('SYNC dbEvolutions dir'.PHP_EOL.UExec::rsync($projectBasePath.'dbEvolutions',$target.'dbEvolutions/',$options));
+		
+		
+		if($currentServerDbVersion != $currentLocalDbVersion) $resp->push($this->stop($scPath));
+		
+		$options['exclude']=array('logs/','web/files/*','db','data','.htaccess','authfile','/schema.php','/job.php','/cli.php','/index.php','/dbEvolutions','/currentDbVersion','/lastWebFolder','/web/'.$lastWebFolder);
 		/*$res.=UExec::rsync(dirname(CORE).DS.'prod'.DS,$this->server->core_dir.DS.$sc->path.DS,$options);*/
-			.UExec::rsync($projectPath,$target,$options));
-		
-		$dbPath=$this->project->path().'/db/';
-		if(is_dir($dbPath)){
-			$options['exclude']=array('.svn/');
-			$resp->push('SYNC DB DIR'.PHP_EOL
-				.UExec::rsync($dbPath,$target.'db/',$options));
-		}
+		$resp->push('SYNC'.PHP_EOL.UExec::rsync($projectPath,$target,$options));
 		
 		$resp->push('EXECUTE schema.php'.PHP_EOL
 			.($resSchema=UExec::exec('php '.escapeshellarg($target.'schema.php'),$options['ssh']+array('forcePseudoTty'=>true))));
-		$shemaProcessSuccess=('Schema processed'===$resSchema);
+		$shemaProcessSuccess=('Schema processed'===substr($resSchema,-strlen('Schema processed')));
 		
 		
 		$resp->push('CREATE symb link: cd '.escapeshellarg($target.'web/').' && ln -s . "'.$webFolder.'"'.PHP_EOL
@@ -141,6 +179,8 @@ include CORE.'cli.php';");
 		//	.UExec::exec('cd '.escapeshellarg($target.'data/').' && rm -f cache/* ; rm -f cache/*/* ; rm -f elementsCache/* ; rm -f elementsCache/*/*',$options['ssh']));
 		
 		if($shemaProcessSuccess) $resp->push($this->start($scPath,$webFolder));
+		
+		UExec::exec('cd / && echo '.escapeshellarg($webFolder).' > '.escapeshellarg($target.'lastWebFolder'),$sshOptions);
 		
 		
 		/* UPDATE CRON */
