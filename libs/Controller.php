@@ -35,7 +35,7 @@ class AController extends Controller{
 		));
 	}
 	
-	
+	/* !!!! COPY in DevLangsController */
 	protected static function _recursiveFiles(&$path,&$arrayStrings,$functionName='_t',$deleteLastParam=false,$pattern=false){
 		foreach(new RecursiveDirectoryIterator($path,FilesystemIterator::KEY_AS_PATHNAME | FilesystemIterator::CURRENT_AS_FILEINFO | FilesystemIterator::SKIP_DOTS)
 					as $pathname=>$fileInfo){
