@@ -50,8 +50,8 @@ class Deployment extends SSqlModel{
 		$resp->push('Hi ! Deployment : '.$projectBasePath.' ===> '.$this->server->host.':'.$target);
 		
 		/* Pre - deployment */
+		// REQUIRED : pre-dbprocessing by PROD (use APP instead of dirname(APP))
 		copy($projectBasePath.'currentDbVersion',$projectPath.'currentDbVersion');
-		copy($projectBasePath.'dbVersions',$projectPath.'dbVersions');
 		
 		$baseDefine="<?php
 define('DS', DIRECTORY_SEPARATOR);
@@ -160,12 +160,12 @@ include CORE.'cli.php';");
 		
 		$options['exclude']=array('.svn/');
 		
-		$resp->push('SYNC dbEvolutions dir'.PHP_EOL.UExec::rsync($projectBasePath.'dbEvolutions',$target.'dbEvolutions/',$options));
+		//$resp->push('SYNC dbEvolutions dir'.PHP_EOL.UExec::rsync($projectPath.'dbEvolutions',$target.'dbEvolutions/',$options));
 		
 		
 		if($stopProject) $resp->push($this->stop($scPath));
 		
-		$options['exclude']=array('logs/','web/files/*','db','data','.htaccess','authfile','/schema.php','/job.php','/cli.php','/index.php','/dbEvolutions','/currentDbVersion','/lastWebFolder','/web/'.$lastWebFolder);
+		$options['exclude']=array('logs/','web/files/*','db','data','.htaccess','authfile','/schema.php','/job.php','/cli.php','/index.php',/*'/dbEvolutions',*/'/currentDbVersion','/lastWebFolder','/web/'.$lastWebFolder);
 		/*$res.=UExec::rsync(dirname(CORE).DS.'prod'.DS,$this->server->core_dir.DS.$sc->path.DS,$options);*/
 		$resp->push('SYNC'.PHP_EOL.UExec::rsync($projectPath,$target,$options));
 		
