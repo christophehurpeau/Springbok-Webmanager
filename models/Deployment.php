@@ -132,7 +132,7 @@ include CORE.'cli.php';");
 		if(in_array($webFolder,array('css','js','img','ie'))) $webFolder.='_';
 		
 		$jsFilenames=array('global.js','jsapp.js');
-		foreach($this->project->entries() as $entry){
+		foreach($entries as $entry){
 			$jsFilenames[]=$entry.'.js';
 			$options['exclude'][]='/'.$entry.'.php';
 		}
@@ -166,6 +166,7 @@ include CORE.'cli.php';");
 		if($stopProject) $resp->push($this->stop($scPath));
 		
 		$options['exclude']=array('logs/','web/files/*','db','data','.htaccess','authfile','/schema.php','/job.php','/cli.php','/index.php',/*'/dbEvolutions',*/'/currentDbVersion','/lastWebFolder','/web/'.$lastWebFolder);
+		foreach($entries as $entry) $options['exclude'][]='/'.$entry.'.php';
 		/*$res.=UExec::rsync(dirname(CORE).DS.'prod'.DS,$this->server->core_dir.DS.$sc->path.DS,$options);*/
 		$resp->push('SYNC'.PHP_EOL.UExec::rsync($projectPath,$target,$options));
 		
