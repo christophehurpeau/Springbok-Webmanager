@@ -4,7 +4,6 @@ class PluginController extends AController{
 	protected static function beforeRender(){
 		self::setForLayout('pluginsPaths',PluginPath::findListName());
 		self::setForLayout('plugins',Plugin::findListName());
-		return true;
 	}
 	
 	/** */

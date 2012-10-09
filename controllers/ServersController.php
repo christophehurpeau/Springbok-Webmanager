@@ -3,7 +3,6 @@ class ServersController extends AController{
 	
 	protected static function beforeRender(){
 		self::setForLayout('servers',Server::findListName());
-		return true;
 	}
 	
 	
