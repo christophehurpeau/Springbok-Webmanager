@@ -3,21 +3,23 @@
 class Deployment extends SSqlModel{
 	public
 		/** @Pk @AutoIncrement @SqlType('INTEGER') @NotNull
-		 */ $id,
+		*/ $id,
 		/** @SqlType('INTEGER') @NotNull
-		 * @Index
-		 */ $server_id,
+		* @Index
+		*/ $server_id,
 		/** @SqlType('INTEGER') @NotNull
-		 * @Index
-		 */ $project_id,
+		* @Index
+		*/ $project_id,
 		/** @SqlType('INTEGER') @Null @Default(NULL)
-		 */ $server_core_id,
+		*/ $server_core_id,
 		/** @SqlType('TEXT') @NotNull
-		 */ $path,
+		*/ $path,
 		/** @SqlType('TEXT') @NotNull @Default("'/'")
-		 */ $base_url,
+		*/ $base_url,
 		/** @SqlType('TEXT') @Null @Default('')
-		 */ $ssh;
+		*/ $ssh,
+		/** @SqlType('VARCHAR(20)') @NotNull @Default('prod')
+		 */ $env_name;
 	
 	public static $belongsTo=array('Server','Project');
 	
@@ -44,7 +46,7 @@ class Deployment extends SSqlModel{
 		$projectBasePath=rtrim($this->project->path(),'/').'/';
 		$projectPath=$this->getProjectPath();
 		$entries=$this->project->entries();
-		$envConfig=$this->project->envConfig($this->server->env_name);
+		$envConfig=$this->project->envConfig($this->env_name);
 		$target=rtrim($this->path(),'/').DS;
 		
 		$resp->push('Hi ! Deployment : '.$projectBasePath.' ===> '.$this->server->host.':'.$target);
@@ -106,6 +108,11 @@ include CORE.'cli.php';";
 		
 		$tmpfname = tempnam('/tmp','projectdepl');
 		
+		file_put_contents($tmpfname,'<?php return \''.$this->env_name.'\';');
+		$resp->push('=> SEND ENV'.PHP_EOL
+					.UExec::copyFile($tmpfname,$target.'env.php',$sshOptions));
+		
+		
 		file_put_contents($tmpfname,"<?php".$baseDefine."
 ".'$action'."='schema';
 include CORE.'cli.php';");
@@ -150,6 +157,8 @@ include CORE.'cli.php';");
 			}
 		}
 		
+		
+		
 		$options['exclude']=array('.svn/');
 		if(is_dir($dbPath=$projectBasePath.'db/'))
 			$resp->push('SYNC DB DIR'.PHP_EOL.UExec::rsync($dbPath,$target.'db/',$options));
@@ -165,7 +174,8 @@ include CORE.'cli.php';");
 		
 		if($stopProject) $resp->push($this->stop($scPath));
 		
-		$options['exclude']=array('logs/','web/files/*','db','data','.htaccess','authfile','/schema.php','/job.php','/cli.php','/index.php',/*'/dbEvolutions',*/'/currentDbVersion','/lastWebFolder','/web/'.$lastWebFolder);
+		$options['exclude']=array('logs/','web/files','db','data','.htaccess','authfile','/schema.php','/job.php','/cli.php',
+				'/env.php','/index.php',/*'/dbEvolutions',*/'/currentDbVersion','/lastWebFolder','/web/'.$lastWebFolder);
 		foreach($entries as $entry) $options['exclude'][]='/'.$entry.'.php';
 		/*$res.=UExec::rsync(dirname(CORE).DS.'prod'.DS,$this->server->core_dir.DS.$sc->path.DS,$options);*/
 		$resp->push('SYNC'.PHP_EOL.UExec::rsync($projectPath,$target,$options));
@@ -270,10 +280,12 @@ include CORE.'app.php';";
 		$res='=> START PROJECT'.PHP_EOL
 			.UExec::copyFile($tmpfname,$target.'index.php',$sshOptions);
 		
-		if(!empty($entries))
+		if(!empty($entries)){
+			file_put_contents($tmpfname,'<?php include __DIR__."/index.php";');
 			foreach($entries as $entry)
 				$res.=PHP_EOL.'=> START ENTRANCE: '.$entry.PHP_EOL
 					.UExec::copyFile($tmpfname,$target.$entry.'.php',$sshOptions);
+		}
 		
 		if(file_exists($deamonsFilePath=$this->getProjectPath().'config/daemons.php')){
 			$res.=PHP_EOL.'=> START daemons'.PHP_EOL;
@@ -312,11 +324,11 @@ if(file_exists((".'$filename'."=CORE.'maintenance.php'))){
 		
 		$res.=PHP_EOL.'=> STOP PROJECT'.PHP_EOL
 			.UExec::copyFile($tmpfname,$target.'index.php',$sshOptions);
-		if(!empty($entries))
+		/*if(!empty($entries))
 			foreach($entries as $entry)
 				$res.=PHP_EOL.'=> STOP ENTRANCE: '.$entry.PHP_EOL
 					.UExec::copyFile($tmpfname,$target.$entry.'.php',$sshOptions);
-		
+		*/
 		unlink($tmpfname);
 		
 		if(file_exists($deamonsFilePath=$this->getProjectPath().'config/daemons.php')){
