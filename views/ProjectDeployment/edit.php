@@ -5,6 +5,7 @@
 <?php $form=HForm::create('Deployment');
 echo $form->input('path');
 echo $form->input('base_url');
+echo $form->input('env_name');
 echo $form->end();
 ?>
 </div>

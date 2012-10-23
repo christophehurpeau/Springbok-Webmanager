@@ -26,7 +26,7 @@ class ProjectDeploymentController extends AController{
 		notFoundIfFalse($existingDeployment);
 		if($deployment!==null){
 			$deployment->id=$id;
-			$deployment->update('path','base_url');
+			$deployment->update('path','base_url','env_name');
 			self::redirect('/projectDeployment/all/'.$existingDeployment->project_id);
 		}
 		self::set_('deployment',$existingDeployment);
