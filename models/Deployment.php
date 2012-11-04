@@ -189,7 +189,7 @@ include CORE.'cli.php';");
 			.UExec::exec('cd '.escapeshellarg($target.'web/').' && ln -s .'.($webFolder[0]==='-'?' --':'').' "'.$webFolder.'"',$options['ssh']));
 		
 		$resp->push('Make sure the rights are good'.PHP_EOL
-			.UExec::exec('cd '.escapeshellarg($target).' && chmod -R --quiet 775 web/ controllers* views* config/ helpers/ libs/ models/',$options['ssh']));
+			.UExec::exec('cd '.escapeshellarg($target).' ; chmod -R --quiet 775 web/ controllers* views* config/ helpers/ libs/ models/ ; chmod --quiet 644 *.php',$options['ssh']));
 		
 		//$resp->push('Delete CACHE files'.PHP_EOL
 		//	.UExec::exec('cd '.escapeshellarg($target.'data/').' && rm -f cache/* ; rm -f cache/*/* ; rm -f elementsCache/* ; rm -f elementsCache/*/*',$options['ssh']));
