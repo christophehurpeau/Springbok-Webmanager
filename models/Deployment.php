@@ -76,8 +76,8 @@ include CORE.'cli.php';";
 		$resp->push($this->startDaemon($workspaceId));
 		
 		// Get current db version
-		$currentLocalDbVersion=UFile::getContents($projectBasePath.'currentDbVersion');
-		$currentServerDbVersion=UExec::exec('cd / && cat '.escapeshellarg($target.'currentDbVersion'),$sshOptions);
+		$currentLocalDbVersion=trim(UFile::getContents($projectBasePath.'currentDbVersion'));
+		$currentServerDbVersion=trim(UExec::exec('cd / && cat '.escapeshellarg($target.'currentDbVersion'),$sshOptions));
 		$resp->push('DB Versions : server='.$currentServerDbVersion.', local='.$currentLocalDbVersion);
 		$stopProject=$currentServerDbVersion != $currentLocalDbVersion || (isset($_REQUEST['projectStop']) && $_REQUEST['projectStop']=='1');
 		$resp->push('stop : '.($stopProject?'true':'false'));
