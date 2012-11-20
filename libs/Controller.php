@@ -4,7 +4,7 @@ class AController extends Controller{
 	public static $workspace;
 	
 	public static function beforeDispatch(){
-		if(!CSession::exists('workspace')){
+		if(!CSession::exists('workspace') || !($w=CSession::get('workspace')) || empty($w->name)){
 			if(CCookie::exists('Workspace')){
 				$workspaceCookie=CCookie::get('Workspace');
 				if(empty($workspaceCookie->id)){

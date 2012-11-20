@@ -9,6 +9,7 @@ includeCore('helpers/form');
 includeCore('ui/dialogs');
 
 define('AJAX_CONTENT_EFFECT',false);
+define('UPDATE_H1_WITH_TITLE',true);
 
 includeLib('codemirror/codemirror');
 includeLib('codemirror/overlay');

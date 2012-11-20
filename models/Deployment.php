@@ -241,8 +241,8 @@ include CORE.'cli.php';");
 	private function baseDefine($scPath){
 		return "
 define('DS', DIRECTORY_SEPARATOR);
-define('CORE','".$this->server->core_dir.DS.$scPath.DS."');
-define('CLIBS','".$this->server->core_dir."/libs/');
+define('CORE','".rtrim($this->server->core_dir,'/').DS.$scPath.DS."');
+define('CLIBS','".rtrim($this->server->core_dir,'/')."/libs/');
 define('APP', __DIR__.DS);";
 	}
 	
