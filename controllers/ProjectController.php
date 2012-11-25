@@ -140,7 +140,7 @@ include CORE.'cli.php';";
 				."\n\t'secure'=>array('crypt_key'=>'".str_replace("'",'0',uniqid('',true))."',)"
 				."\n);");
 			file_put_contents($dir.'_'.ENV.'.php',"<?"."php return array(\n\t'siteUrl'=>array('index'=>'http://localhost/'),"
-					."\n\t'db'=>array(\n\t\t'_lang'=>dirname(dirname(__DIR__)).'/db/',\n\t\t'default'=>array(\n\t\t\t\n\t\t\t'user'=>'root','password'=>'root'\n\t\t),\n\t),'generate'=>array('default'=>true)\n\t\n);");
+					."\n\t'db'=>array(\n\t\t'default'=>array(\n\t\t\t\n\t\t\t'user'=>'root','password'=>'root'\n\t\t),\n\t),'generate'=>array('default'=>true)\n\t\n);");
 			file_put_contents($dir.'routes.php',"<?"."php return array(\n\t'/favicon'=>array('Site::favicon','ext'=>'[a-z]+'),\n\t'/'=>array('Site::index'),"
 				."\n\t'/:controller(/:action/*)?'=>array('!::!'),\n);");
 			file_put_contents($dir.'routes-langs.php',"<?"."php return NULL;");

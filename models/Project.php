@@ -21,17 +21,18 @@ class Project extends SSqlModel{
 	public function path(){
 		return CSession::get('workspace')->projects_dir.$this->path;
 	}
-	
+	/*
 	public function fullUrl(){
 		$config=$this->path().'/dev/config/_'.ENV.'.php';
 	}
-	
+	*/
 	public function entries(){
 		$config=include $this->path().'/src/config/enhance.php';
 		return empty($config["entries"])?array():$config["entries"];
 	}
 	public function envConfig($env){
-		return include $this->path().'/src/config/_'.$env.'.php';
+		$conf=$this->path().'/src/config/_'.$env.'.';
+		return file_exists($conf.'json') ? UFile::getJSON($conf.'json') : include $conf.'php';
 	}
 	
 	public function entryBaseUrl($env,$entry){

@@ -43,7 +43,6 @@ file_put_contents($webmanagerDir.'config/_'.$env.'.php',"<?php return array(
 	'php_doc_dir'=>dirname(__DIR__).'/php-chunked-xhtml/',
 	
 	'db'=>array(
-		'_lang'=>dirname(__DIR__).'/db/',
 		'default'=>array('type'=>'SQLite', 'file'=>dirname(__DIR__).'/webmanager.db',),
 	),
 	'generate'=>array('default'=>true),
