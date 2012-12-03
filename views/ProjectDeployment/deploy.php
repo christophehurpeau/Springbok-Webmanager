@@ -19,7 +19,7 @@ var list=$('#deployList');
 			var content=$('<li class="content"/>');
 			if(m.data.sbStartsWith('WARNING')) content.attr('style','color:orange');
 			else if(m.data.sbStartsWith('ERROR')) content.attr('style','color:red');
-			else content.text(m.data);
+			content.text(m.data);
 			list.append(content);
 		};
 		evtSource.addEventListener('close',function(){

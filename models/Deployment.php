@@ -55,6 +55,16 @@ class Deployment extends SSqlModel{
 		// REQUIRED : pre-dbprocessing by PROD (use APP instead of dirname(APP))
 		copy($projectBasePath.'currentDbVersion',$projectPath.'currentDbVersion');
 		
+		/* Prepare SSH */
+		$sshOptions=$this->server->sshOptions();
+		
+		$resp->push($this->stopDaemon($workspaceId));
+		$resp->push($this->startDaemon($workspaceId));
+		
+		//base define
+		
+		$isPhp5_4='yes'===trim(UExec::exec('cd / && php -r "echo version_compare(PHP_VERSION,\'5.4.0\')===-1 ? \'no\' : \'yes\';"',$sshOptions));
+		
 		$baseDefine="<?php
 define('DS', DIRECTORY_SEPARATOR);
 define('CORE','".dirname(CORE)."/prod/');
@@ -68,12 +78,6 @@ include CORE.'cli.php';";
 		
 		$resp->push($resSchemaProcess=UExec::exec('php '.escapeshellarg($projectPath.'schema.php')));
 		if('Schema processed'!==substr($resSchemaProcess,-strlen('Schema processed'))) return false;
-		
-		/* Prepare SSH */
-		$sshOptions=$this->server->sshOptions();
-		
-		$resp->push($this->stopDaemon($workspaceId));
-		$resp->push($this->startDaemon($workspaceId));
 		
 		// Get current db version
 		$currentLocalDbVersion=trim(UFile::getContents($projectBasePath.'currentDbVersion'));
@@ -98,7 +102,7 @@ include CORE.'cli.php';";
 			 }
 		}
 		
-		$baseDefine=$this->baseDefine($scPath);
+		$baseDefine=$this->baseDefine($scPath,$isPhp5_4);
 
 		
 		/* -- -- -- */
@@ -194,7 +198,7 @@ include CORE.'cli.php';");
 		//$resp->push('Delete CACHE files'.PHP_EOL
 		//	.UExec::exec('cd '.escapeshellarg($target.'data/').' && rm -f cache/* ; rm -f cache/*/* ; rm -f elementsCache/* ; rm -f elementsCache/*/*',$options['ssh']));
 		
-		if($shemaProcessSuccess) $resp->push($this->start($scPath,$webFolder));
+		if($shemaProcessSuccess) $resp->push($this->start($scPath,$webFolder,$isPhp5_4));
 		
 		UExec::exec('cd / && echo '.escapeshellarg($webFolder).' > '.escapeshellarg($target.'lastWebFolder'),$sshOptions);
 		
@@ -238,12 +242,13 @@ include CORE.'cli.php';");
 	}
 	
 	
-	private function baseDefine($scPath){
+	private function baseDefine($scPath,$isPhp5_4=true){
 		return "
 define('DS', DIRECTORY_SEPARATOR);
 define('CORE','".rtrim($this->server->core_dir,'/').DS.$scPath.DS."');
 define('CLIBS','".rtrim($this->server->core_dir,'/')."/libs/');
-define('APP', __DIR__.DS);";
+define('APP', __DIR__.DS);"
+		.($isPhp5_4===false ? "include CORE.'php5-3.php';" : '');
 	}
 	
 	
@@ -260,14 +265,14 @@ define('APP', __DIR__.DS);";
 	}
 	
 	/* NEED : project,server */
-	public function start($scPath=NULL,$appVersion){
+	public function start($scPath=NULL,$appVersion,$isPhp5_4=true){
 		if($scPath===null){
 			$scPath=$this->server->findLastVersion($this,$resp=new ABasicResp(),false);
 			if(empty($scPath)) return $resp->getResp();
 			$res=$resp->getResp();
 		}
 		
-		$indexContentStarted="<?php".$this->baseDefine($scPath)."
+		$indexContentStarted="<?php".$this->baseDefine($scPath,$isPhp5_4)."
 define('APP_DATE',".time().");define('APP_VERSION','".$appVersion."'); define('WEB_FOLDER','".$appVersion."/');
 include CORE.'app.php';";
 
@@ -297,7 +302,7 @@ include CORE.'app.php';";
 	}
 	
 	/* NEED : project,server */
-	public function stop($scPath=null,$workspaceId=null){
+	public function stop($scPath=null,$workspaceId=null,$isPhp5_4=true){
 		$res=''; $daemonStarted=false;
 		if($scPath===null){
 			if(empty($workspaceId)) return 'Deployment::stop: missing "workspaceId"';
@@ -310,7 +315,7 @@ include CORE.'app.php';";
 		
 		
 		$indexContentStopped="<?php
-header('HTTP/1.1 503 Service Temporarily Unavailable',true,503);".$this->baseDefine($scPath)."
+header('HTTP/1.1 503 Service Temporarily Unavailable',true,503);".$this->baseDefine($scPath,$isPhp5_4)."
 if(file_exists((".'$filename'."=CORE.'maintenance.php'))){
 	define('APP_DATE',".time()."); define('APP_VERSION',''); define('WEB_FOLDER','');
 	include ".'$filename'.";
