@@ -152,8 +152,7 @@ include CORE.'plugin.php';";
 	/** @ValidParams
 	* id > @Required
 	*/ function view_pluginsPath(int $id){
-		$pluginPath=PluginPath::findOneById($id);
-		if(empty($pluginPath)) notFound();
+		$pluginPath=PluginPath::ById($id)->notFoundIfFalse();
 		$deployments=PluginPathDeployment::QAll()->byPlugin_path_id($id)->with('Server');
 		$servers=Server::findListName();
 		self::mset($pluginPath,$deployments,$servers);
@@ -170,8 +169,7 @@ include CORE.'plugin.php';";
 	/** @ValidParams
 	* id > @Required
 	*/ function path_do_deployment(int $id){
-		$ppd=PluginPathDeployment::findOneById($id);
-		notFoundIfFalse($ppd);
+		$ppd=PluginPathDeployment::ById($id)->notFoundIfFalse();
 		$ppd->doDeployment();
 	}
 }

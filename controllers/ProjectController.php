@@ -10,8 +10,7 @@ class ProjectController extends AController{
 	/** @ValidParams
 	* id > @Required
 	*/ function view(int $id){
-		$project=Project::ById($id);
-		notFoundIfFalse($project);
+		$project=Project::ById($id)->notFoundIfFalse();
 		mset($project);
 		render();
 	}
@@ -19,8 +18,7 @@ class ProjectController extends AController{
 	/** @ValidParams
 	* id > @Required
 	*/ function enhance(int $id){
-		$project=Project::ById($id);
-		notFoundIfFalse($project);
+		$project=Project::ById($id)->notFoundIfFalse();
 		$project->checkCli();
         $res=UExec::exec('php '.escapeshellarg($project->path().'/cli.php').' enhance');
         if(!empty($res)) debugCode($res);
@@ -61,8 +59,7 @@ include CORE.'cli.php';";
 	/** @ValidParams
 	* id > @Required
 	*/ function start_prod(int $id){
-		$project=Project::ById($id);
-		notFoundIfFalse($project);
+		$project=Project::ById($id)->notFoundIfFalse();
 		$projectPath=self::$workspace->projects_dir.$project->path.'/prod/'.DS;
 		
 		$baseDefine="<?php
@@ -185,8 +182,7 @@ include CORE.'cli.php';";
 	/** @ValidParams
 	* id > @Required
 	*/ function createStructure(int $id){
-		$project=Project::ById($id);
-		notFoundIfFalse($project);
+		$project=Project::ById($id)->notFoundIfFalse();
 		$projectPath=self::$workspace->projects_dir.$project->path.DS.'src'.DS;
 		self::_createStructure($projectPath,$project->name);
 		self::redirect('/project/view/'.$id);
@@ -203,11 +199,10 @@ include CORE.'cli.php';";
 	 * id > @Required
 	 */
 	function jobs(int $id){
-		$project=Project::ById($id);
-		notFoundIfFalse($project);
-		self::mset($project);
-		self::set('jobs',file_exists($filename=$project->path().DS.'dev/config/jobs.php') ? include $filename : false);
-		self::render();
+		$project=Project::ById($id)->notFoundIfFalse();
+		mset($project);
+		set('jobs',file_exists($filename=$project->path().DS.'dev/config/jobs.php') ? include $filename : false);
+		render();
 	}
 	
 	/** @ValidParams
@@ -215,8 +210,7 @@ include CORE.'cli.php';";
 	 * name > @Required
 	 */
 	function job_execute(int $id,$name){
-		$project=Project::ById($id);
-		notFoundIfFalse($project);
+		$project=Project::ById($id)->notFoundIfFalse();
 		$jobs=include $project->path().DS.'dev/config/jobs.php';
 		if(!isset($jobs[$name])) notFound();
 		//if(!CHttpRequest::isPOST()) render('job_confirm');
