@@ -2,9 +2,13 @@
 <html>
 	<head>
 		<? HHtml::metaCharset() ?>
-		<title>{$layout_title}</title>
-		<?php HHtml::cssLink(); HHtml::jsLink(); HHtml::jsI18n() ?>
-		<? HHtml::favicon() ?>
+		<?php
+			HHead::title($layout_title);
+			HHead::linkCssAndJs();
+			HHead::jsI18n();
+			HHead::favicon();
+			HHead::display();
+		?>
 	</head>
 	<body>{=$layout_content}</body>
 </html>
