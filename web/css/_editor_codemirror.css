@@ -6,7 +6,7 @@
 	left: 0;
 	right: 0;
 }
-*/
+*//*
 @includeLib 'jquery.filetree.css';
 @includeLib 'jquery.contextMenu.css';
 @includeLib 'codemirror/codemirror.css';
@@ -30,3 +30,4 @@ body #container .fullscreen{
 	height:auto;
 	overflow:inherit;
 }
+*/

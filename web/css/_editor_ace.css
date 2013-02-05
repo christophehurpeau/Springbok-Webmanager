@@ -1,4 +1,4 @@
-#editor { 
+/*#editor { 
     margin: 0;
     position: absolute;
     top: 0;
@@ -8,4 +8,4 @@
 }
 
 @includeLib 'jquery.filetree.css';
-@includeCore 'components/contextmenu';
+@includeCore 'components/contextmenu';*/

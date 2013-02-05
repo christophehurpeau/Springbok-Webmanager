@@ -1,4 +1,4 @@
-includeLib('jquery.filetree');
+//includeLib('jquery.filetree');
 
 var editor,currentFile,modes;
 window.onload = function() {
