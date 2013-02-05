@@ -7,5 +7,5 @@
     right: 0;
 }
 
-@includeLib 'jquery.filetree.css';
-@includeCore 'components/contextmenu';*/
+@ includeLib 'jquery.filetree.css';
+@ includeCore 'components/contextmenu';*/
