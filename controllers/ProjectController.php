@@ -148,16 +148,16 @@ include CORE.'cli.php';";
 			mkdir($dir=$projectPath.'controllers/');
 			file_put_contents($dir.'SiteCont'.'roller.php',"<?"."php\ncl"."ass SiteContr"."oller extends Contr"."oller{\n"
 				."\t/* @"."ImportAction('core','Site','index') */\n"
-				."\t/* @"."ImportAction('core','Site','favicon') */\n"
-				."\t/* @"."ImportAction('core','Site','robots') */\n}");
+				."\t/* @"."ImportAction('core','Site','favicon') */\n}");
 			mkdir($dir=$projectPath.'models/');
 			mkdir($dir=$projectPath.'views/');
 			mkdir($dir2=$dir.'Site/');
 			file_put_contents($dir2.'index.php',"<?"."php new AjaxContentView() ?".">");
 			mkdir($dir=$projectPath.'viewsLayouts/');
 			file_put_contents($dir.'base.php',"<? HHtml::doctype() ?>\n<html lang=\"<? CLang::get() ?>\">\n"
-				."\t<head>\n\t\t<? HHtml::metaCharset() ?>\n\t\t<title>".'{$layout_title}'."</title>"
-				."\n\t\t<?"."php HHtml::cssLink() ?".">\n\t</head>\n\t<body>"
+				."\t<head>\n\t\t<? HHtml::metaCharset() ?>\n\t\t<?php\n\t\t\tHHead::title($layout_title);"
+				."\n\t\t\tHHead::linkCss();\n\t\t\tHHead::display();"
+				."\n\t\t?".">\n\t</head>\n\t<body>"
 				."\n\t\t".'{=$layout_content}'
 				."\n\t</body>"."\n</html>");
 			
