@@ -16,14 +16,17 @@ ul.devtools_colors li{
 	width:70px;
 }
 
-@include '_editor_ace.css';
+/*
+@ include '_editor_ace.css';
 
-@includeLib 'codemirror/codemirror.css';
-@includeLib 'codemirror/themes/elegant.css';
+@ includeLib 'codemirror/codemirror.css';
+@ includeLib 'codemirror/themes/elegant.css';
 
 .dbsqlcode .CodeMirror-scroll{
 	height:70px
 }
+*/
+
 
 ul#deployList{
   @extend ul.nobullets;

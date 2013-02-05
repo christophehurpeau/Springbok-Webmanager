@@ -10,17 +10,19 @@ includeCore('ui/dialogs');
 
 define('AJAX_CONTENT_EFFECT',false);
 define('UPDATE_H1_WITH_TITLE',true);
+/*
+include Lib('codemirror/codemirror');
+include Lib('codemirror/overlay');
 
-includeLib('codemirror/codemirror');
-includeLib('codemirror/overlay');
+include Lib('codemirror/modes/plsql/plsql');
+include Lib('codemirror/modes/xml/xml');
+include Lib('codemirror/modes/javascript/javascript');
+include Lib('codemirror/modes/css/css');
+include Lib('codemirror/modes/clike/clike');
+include Lib('codemirror/modes/php/php');
+include Lib('codemirror/modes/htmlmixed/htmlmixed');
 
-includeLib('codemirror/modes/plsql/plsql');
-includeLib('codemirror/modes/xml/xml');
-includeLib('codemirror/modes/javascript/javascript');
-includeLib('codemirror/modes/css/css');
-includeLib('codemirror/modes/clike/clike');
-includeLib('codemirror/modes/php/php');
-includeLib('codemirror/modes/htmlmixed/htmlmixed');
+*/
 
 includeCore('springbok.contextmenu');
 
