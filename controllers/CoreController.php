@@ -62,7 +62,7 @@ class CoreController extends AController{
 			$statement->execute();
 		}
 		
-		file_put_contents(dirname(CORE).'/src/i18n/langs/'.$lang.'.php','<?php return '.UPhp::exportCode($data).';');
+		file_put_contents(dirname(CORE).'/src/i18n/langs/'.$lang.'.php','<?php return '.UPhp::exportCode($data,null,"\n").';');
 		
 		$content="window.i18nc={";
 		foreach($data as $s=>$t)
