@@ -54,7 +54,7 @@
 			tr.children('td:eq(4)').html('<span class="icon '+(data.success?'tick':'cross')+'"></span> '+data.status);
 			if(data.contentOk!==null) tr.children('td:eq(5)').html('<span class="icon '+(data.contentOk?'tick':'cross')+'"></span> '+(data.contentOk?'Le contenu correspond':'Le contenu ne correspond pas')+'.');
 			//console.log(data);
-			//list.append($('<li class="content"/>').attr('style',m.data.sbStartsWith('WARNING')?'color:orange':(m.data.sbStartsWith('ERROR')?'color:red':'')).text(m.data));
+			//list.append($('<li class="content"/>').attr('style',m.data.startsWith('WARNING')?'color:orange':(m.data.startsWith('ERROR')?'color:red':'')).text(m.data));
 		};
 		evtSource.addEventListener('close',function(){
 			evtSource.close();

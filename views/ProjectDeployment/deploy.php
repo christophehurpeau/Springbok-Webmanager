@@ -17,8 +17,8 @@ var list=$('#deployList');
 		var evtSource = new EventSource(basedir+"projectDeploymentServerSend/deploy/{=$deployment->id}{? isset($_REQUEST['projectStop']) && $_REQUEST['projectStop']=='1' => '?projectStop=1' : ''}");
 		evtSource.onmessage = function(m){
 			var content=$('<li class="content"/>');
-			if(m.data.sbStartsWith('WARNING')) content.attr('style','color:orange');
-			else if(m.data.sbStartsWith('ERROR')) content.attr('style','color:red');
+			if(m.data.startsWith('WARNING')) content.attr('style','color:orange');
+			else if(m.data.startsWith('ERROR')) content.attr('style','color:red');
 			content.text(m.data);
 			list.append(content);
 		};
