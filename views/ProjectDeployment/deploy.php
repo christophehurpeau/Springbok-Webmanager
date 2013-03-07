@@ -14,7 +14,7 @@ var list=$('#deployList');
 			alert('Votre navigateur n\'est pas compatible avec EventSource');
 			return;
 		}
-		var evtSource = new EventSource(basedir+"projectDeploymentServerSend/deploy/{=$deployment->id}{? isset($_REQUEST['projectStop']) && $_REQUEST['projectStop']=='1' => '?projectStop=1' : ''}");
+		var evtSource = new EventSource(basedir+"projectDeploymentServerSend/deploy/{=$deployment->id}{if isset($_REQUEST['projectStop']) && $_REQUEST['projectStop']=='1'}?projectStop=1{elseif isset($_REQUEST['projectStopBeforeDbEvolution']) && $_REQUEST['projectStopBeforeDbEvolution']=='1'}?projectStopBeforeDbEvolution=1{/if}");
 		evtSource.onmessage = function(m){
 			var content=$('<li class="content"/>');
 			if(m.data.startsWith('WARNING')) content.attr('style','color:orange');

@@ -168,8 +168,14 @@ class Server extends SSqlModel{
 		}
 
 		$this->saveVersions($versions);
+		$this->removeBlockFile($sshOptions);
+	}
+	
+	public function removeBlockFile($sshOptions=null){
+		if($sshOptions===null) $sshOptions=$this->sshOptions();
 		UExec::exec('rm '.escapeshellarg($this->core_dir.'/block'),$sshOptions);
 	}
+	
 /*
 	public function connect(){
 		include CORE.'libs/phpseclib/Net/SSH2.php';

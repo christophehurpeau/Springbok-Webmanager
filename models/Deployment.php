@@ -54,6 +54,8 @@ class Deployment extends SSqlModel{
 		/* Pre - deployment */
 		// REQUIRED : pre-dbprocessing by PROD (use APP instead of dirname(APP))
 		copy($projectBasePath.'currentDbVersion',$projectPath.'currentDbVersion');
+		$projectStopBeforeDbEvolution=isset($_REQUEST['projectStopBeforeDbEvolution']) && $_REQUEST['projectStopBeforeDbEvolution']=='1';
+		
 		
 		/* Prepare SSH */
 		$sshOptions=$this->server->sshOptions();
@@ -83,7 +85,8 @@ include CORE.'cli.php';";
 		$currentLocalDbVersion=trim(UFile::getContents($projectBasePath.'currentDbVersion'));
 		$currentServerDbVersion=trim(UExec::exec('cd / && cat '.escapeshellarg($target.'currentDbVersion'),$sshOptions));
 		$resp->push('DB Versions : server='.$currentServerDbVersion.', local='.$currentLocalDbVersion);
-		$stopProject=$currentServerDbVersion != $currentLocalDbVersion || (isset($_REQUEST['projectStop']) && $_REQUEST['projectStop']=='1');
+		$stopProject=$currentServerDbVersion != $currentLocalDbVersion || (isset($_REQUEST['projectStop']) && $_REQUEST['projectStop']=='1')
+							|| $projectStopBeforeDbEvolution;
 		$resp->push('stop : '.($stopProject?'true':'false'));
 		
 		/* DEPLOY CORE */
@@ -184,10 +187,12 @@ include CORE.'cli.php';");
 		/*$res.=UExec::rsync(dirname(CORE).DS.'prod'.DS,$this->server->core_dir.DS.$sc->path.DS,$options);*/
 		$resp->push('SYNC'.PHP_EOL.UExec::rsync($projectPath,$target,$options));
 		
-		$resp->push('EXECUTE schema.php'.PHP_EOL
-			.($resSchema=UExec::exec('php '.escapeshellarg($target.'schema.php'),$options['ssh']+array('forcePseudoTty'=>true))));
-		$shemaProcessSuccess=('Schema processed'===substr($resSchema,-strlen('Schema processed')));
+		if(!$projectStopBeforeDbEvolution){
+			$resp->push('EXECUTE schema.php'.PHP_EOL
+				.($resSchema=UExec::exec('php '.escapeshellarg($target.'schema.php'),$options['ssh']+array('forcePseudoTty'=>true))));
+			$shemaProcessSuccess=('Schema processed'===substr($resSchema,-strlen('Schema processed')));
 		
+		}
 		
 		$resp->push('CREATE symb link: cd '.escapeshellarg($target.'web/').' && ln -s . "'.$webFolder.'"'.PHP_EOL
 			.UExec::exec('cd '.escapeshellarg($target.'web/').' && ln -s .'.($webFolder[0]==='-'?' --':'').' "'.$webFolder.'"',$options['ssh']));
@@ -198,9 +203,10 @@ include CORE.'cli.php';");
 		//$resp->push('Delete CACHE files'.PHP_EOL
 		//	.UExec::exec('cd '.escapeshellarg($target.'data/').' && rm -f cache/* ; rm -f cache/*/* ; rm -f elementsCache/* ; rm -f elementsCache/*/*',$options['ssh']));
 		
-		if($shemaProcessSuccess) $resp->push($this->start($scPath,$webFolder,$isPhp5_4));
+		if(!$projectStopBeforeDbEvolution && $shemaProcessSuccess) $resp->push($this->start($scPath,$webFolder,$isPhp5_4));
 		
-		UExec::exec('cd / && echo '.escapeshellarg($webFolder).' > '.escapeshellarg($target.'lastWebFolder'),$sshOptions);
+		if(!$projectStopBeforeDbEvolution)
+			UExec::exec('cd / && echo '.escapeshellarg($webFolder).' > '.escapeshellarg($target.'lastWebFolder'),$sshOptions);
 		
 		
 		/* UPDATE CRON */
@@ -227,13 +233,16 @@ include CORE.'cli.php';");
 			}
 		}
 		
-		if(file_exists($jobFilePath=$projectPath.'jobs/AfterDeployJob.php')){
-			$resp->push('EXECUTE job AfterDeploy'.PHP_EOL
-				.UExec::exec('php '.escapeshellarg($target.'job.php').' AfterDeploy',$options['ssh']+array('forcePseudoTty'=>true)));
-		}
+		if(!$projectStopBeforeDbEvolution){
+			if(file_exists($jobFilePath=$projectPath.'jobs/AfterDeployJob.php')){
+				$resp->push('EXECUTE job AfterDeploy'.PHP_EOL
+					.UExec::exec('php '.escapeshellarg($target.'job.php').' AfterDeploy',$options['ssh']+array('forcePseudoTty'=>true)));
+			}
+			
+			/* Delete old cores */
+			$this->server->removeOldCores($resp);
 		
-		/* Delete old cores */
-		$this->server->removeOldCores($resp);
+		}else $this->server->removeBlockFile();
 		
 		$this->stopDaemon($workspaceId);
 		
