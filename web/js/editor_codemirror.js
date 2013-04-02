@@ -1,4 +1,4 @@
-//includeLib('jquery.filetree');
+//include Lib('jquery.filetree');
 
 var editor,hlLine,currentFile,modes,hasCtrlKey=false,lastSaveHistorySize=0,waitingFunction,dialogs,baseurl;
 
