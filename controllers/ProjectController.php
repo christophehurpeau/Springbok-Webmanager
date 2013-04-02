@@ -155,7 +155,7 @@ include CORE.'cli.php';";
 			file_put_contents($dir2.'index.php',"<?"."php new AjaxContentView() ?".">");
 			mkdir($dir=$projectPath.'viewsLayouts/');
 			file_put_contents($dir.'base.php',"<? HHtml::doctype() ?>\n<html lang=\"<? CLang::get() ?>\">\n"
-				."\t<head>\n\t\t<? HHtml::metaCharset() ?>\n\t\t<?php\n\t\t\tHHead::title($layout_title);"
+				."\t<head>\n\t\t<? HHtml::metaCharset() ?>\n\t\t<?php\n\t\t\tHHead::title(\$layout_title);"
 				."\n\t\t\tHHead::linkCss();\n\t\t\tHHead::display();"
 				."\n\t\t?".">\n\t</head>\n\t<body>"
 				."\n\t\t".'{=$layout_content}'
