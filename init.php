@@ -31,7 +31,7 @@ file_put_contents($webmanagerDir.'config/enhance.php',"<?php return array(
 file_put_contents($webmanagerDir.'config/_.php',"<?php return array(
 	'project_name'=>'webmanager',
 	'projectName'=>'Springbok WebManager',
-	'default_lang'=>'fr',
+	'availableLangs'=>array('fr'),
 	
 	'secure'=>array(
 		'crypt_key'=>'".str_replace("'",'0',uniqid('',true))."',

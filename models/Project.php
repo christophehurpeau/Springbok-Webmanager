@@ -1,7 +1,5 @@
 <?php
-/**
- * @TableAlias('p')
- */
+/** @TableAlias('p') */
 class Project extends SSqlModel{
 	public
 		/** @Pk @AutoIncrement @SqlType('INTEGER') @NotNull
@@ -17,9 +15,37 @@ class Project extends SSqlModel{
 	);
 	public static $hasManyThrough=array('Plugin'=>array('joins'=>'PluginProject'));
 	
+	private static $_allProjects;
+	public static function listAndOpen(){
+		if(self::$_allProjects===null){
+			self::$_allProjects=self::QAll()->orderBy('name');
+			foreach(self::$_allProjects as $p){
+				$p->git=$p->openGit();
+			}
+		}
+		return self::$_allProjects;
+	}
+	
 	
 	public function path(){
 		return CSession::get('workspace')->projects_dir.$this->path;
+	}
+	public function link(){
+		
+	}
+	
+	public function openGit(){
+		if(isset($this->git)) return $this->git;
+		$path=$this->path();
+		try{
+			return $this->git=UGit::open($path);
+		}catch(Exception $e){
+			try{
+				return $this->git=UGit::open(rtrim($path,'/').'/src');
+			}catch(Exception $e){
+				return null;
+			}
+		}
 	}
 	/*
 	public function fullUrl(){

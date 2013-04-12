@@ -1,12 +1,27 @@
 <?php new AjaxContentView(_t('Project:').' '.$project->name,'project'); ?>
 {include _viewmenu.php}
 <div class="content">
-<?php foreach($project as $key=>$value): ?>
+<?php foreach($project as $key=>$value): if($key==='git') continue; ?>
 	<div>
 		<?= _tF('Project',$key) ?> : <?= $value ?>
 	</div>
 <?php endforeach; ?>
 </div>
+{if isset($project->git)}
+<div class="content mtb10">
+	<div class="row">
+		<div class="col wp60">
+			<h4>Git Status</h4>
+			<pre><?= $project->git->run('status'); ?></pre>
+		</div>
+		<div class="col wp40">
+			{if !$project->git->isUpToDate()}
+				<b>Not up-to-date !</b>
+			{/if}
+		</div>
+	</div>
+</div>
+{/if}
 <div class="content sepTop">
 	<i><?= _t('Actions:') ?></i>
 	<ul>

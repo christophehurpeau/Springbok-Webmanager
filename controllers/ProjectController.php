@@ -11,6 +11,7 @@ class ProjectController extends AController{
 	* id > @Required
 	*/ function view(int $id){
 		$project=Project::ById($id)->notFoundIfFalse();
+		$project->openGit();
 		mset($project);
 		render();
 	}
@@ -20,13 +21,13 @@ class ProjectController extends AController{
 	*/ function enhance(int $id){
 		$project=Project::ById($id)->notFoundIfFalse();
 		$project->checkCli();
-        $res=UExec::exec('php '.escapeshellarg($project->path().'/cli.php').' enhance');
-        if(!empty($res)) debugCode($res);
+		$res=UExec::exec('php '.escapeshellarg($project->path().'/cli.php').' enhance');
+		if(!empty($res)) debugCode($res);
 		else self::redirect('/project/view/'.$id);
-        exit;
-        
+		exit;
+		
 		/* PROD */include dirname(CORE).'/dev/enhancers/EnhanceApp.php';/* /PROD */
-		$f=new Folder($projectPath.DS.'tmp_dev'); if($f->exists()) $f->delete();
+		$f=new Folder($projectPath.DS.'tmp'); if($f->exists()) $f->delete();
 		$instance=new EnhanceApp($projectPath);
 		$res=$instance->process(true);
 		self::mset($project);
@@ -132,8 +133,8 @@ include CORE.'cli.php';";
 		if(!file_exists($projectPath)){
 			mkdir($projectPath,0777,true);
 			mkdir($dir=$projectPath.'config/');
-			file_put_contents($dir.'_.php',"<?"."php return array(\n\t'project_name'=>'".UInflector::underscore(preg_replace('/\s+/','',$projectName))."',"
-				."\n\t'projectName'=>'".$projectName."',\n\t'default_lang'=>'fr',\n"
+			file_put_contents($dir.'_.php',"<?"."php return array(\n\t'project_name'=>'".UString::underscore(preg_replace('/\s+/','',$projectName))."',"
+				."\n\t'projectName'=>'".$projectName."',\n\t'availableLangs'=>array('fr'),\n"
 				."\n\t'secure'=>array('crypt_key'=>'".str_replace("'",'0',uniqid('',true))."',)"
 				."\n);");
 			file_put_contents($dir.'_'.ENV.'.php',"<?"."php return array(\n\t'siteUrl'=>array('index'=>'http://localhost/'),"
@@ -213,7 +214,7 @@ include CORE.'cli.php';";
 		$project=Project::ById($id)->notFoundIfFalse();
 		$jobs=include $project->path().DS.'dev/config/jobs.php';
 		if(!isset($jobs[$name])) notFound();
-		//if(!CHttpRequest::isPOST()) render('job_confirm');
+		/*if(!CHttpRequest::isPOST()) render('job_confirm');*/
 		else{
 			set_time_limit(0);
 			self::set('output',UExec::php(CORE.'cron.php',$project->path().'/dev/',$name));
