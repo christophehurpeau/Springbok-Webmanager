@@ -56,4 +56,10 @@ file_put_contents($webmanagerDir.'config/routes.php',"<?php return array(
 	'/:controller(/:action/*)?'=>array('!::!'),
 );");
 
+file_put_contents($webmanagerDir.'config/routes-langs.php',"<?php return array(
+	'phpdoc'=>array('fr'=>'phpdoc','es'=>'phpdoc','it'=>'phpdoc'),
+	'editor'=>array('fr'=>'editeur','es'=>'editor','it'=>'editor'),
+	'ace'=>array('fr'=>'ace','es'=>'ace','it'=>'ace'),
+);");
+
 //file_put_contents($webmanagerDir.'config/routes-langs.php','<?php rerturn array();');
