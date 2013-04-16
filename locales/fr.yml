@@ -1,0 +1,118 @@
+'Actions:': 'Actions :'
+Enhance: Transformer
+No langs.: Aucune langue.
+'Project:': 'Projet :'
+jobs: tâches
+No jobs.: Aucune tâche.
+Execute: Exécuter
+Save: Enregistrer
+Add project: Ajouter un projet
+Add a new project: Ajouter un nouveau projet
+Start PROD: Lancer PROD
+Recreate structure: Recréer la structure
+Are you sure ?: Êtes-vous sûr ?
+'job:': 'tache :'
+Update project: Mettre à jour le projet
+Model fields: Champs des modèles
+Update core translations: Mettre à jour les traductions du Core
+Add a new lang: Ajouter une nouvelle langue
+Deploy: Déployer
+Modify: Modifier
+No deployments.: Aucun déploiement.
+view: voir
+deploy: déployer
+Add a new deployment: Ajouter un nouveau déploiement
+Infos: Infos
+Start IDE: Lancer IDE
+Langs: Langues
+Jobs: Tâches
+Deployments: Déploiements
+Workspaces: Espaces de travail
+Add a workspace: Ajouter un espace de travail
+Add a new workspace: Ajouter un nouvel espace de travail
+Update a workspace: Mettre à jour l'espace de travail
+Home: Accueil
+Servers: Serveurs
+Databases: Bases de données
+Springbok Core: Springbok Core
+Dev Tools: Outils DEV
+PHP Doc: Doc PHP
+MySQL Doc: Doc MySQL
+Add new folder: Ajouter un nouveau dossier
+Add new file: Ajouter un nouveau fichier
+Edit folder: ""
+Delete folder: Supprimer le dossier
+Save the current file ?: Enregistrer le fichier actuel ?
+This file has been modified. Save changes ?: Ce fichier a été modifié. Souhaitez-vous
+  l'enregistrer ?
+No servers: Aucun serveur
+Add server: Ajouter un serveur
+Init ssh: Initialiser ssh
+Tests: Tests
+Colors: Couleurs
+No plugins paths: Aucun plugin path
+Add plugins path: Ajouter un plugin path
+No plugins: Aucun plugin
+Add plugin: Ajouter un plugin
+Add database: Ajouter une base de données
+No projects: Aucun projet
+Plugins: Plugins
+'Plugin:': 'Plugin :'
+'Plugin path:': 'Plugin path :'
+Add a new plugins path: Ajouter un nouveau plugin path
+Add a new plugin: Ajouter un nouveau plugin
+Linked projects: Projets liés
+Add a linked project: Ajouter un project lié
+deployment:
+  one: déploiement
+  other: déploiements
+'Core update:': 'Mise à jour du core :'
+Add a server: Ajouter un serveur
+Add a new server: Ajouter un nouveau serveur
+'Server:': 'Serveur :'
+Update a server: Mettre à jour le serveur
+Core: Core
+Update core: Mise à jour du core
+No cores.: Aucun core.
+Process list: Liste des processus
+Process: Processus
+'Table:': 'Table :'
+Name: Nom
+Type: Type
+"Null": "Null"
+Default: Défaut
+Unique: Unique
+Columns: Colonnes
+Cardinality: Cardinalité
+Comment: Commentaire
+Add a new database: Ajouter une nouvelle base de donnée
+'Databases:': 'Bases de données :'
+View: Afficher
+Structure: Structure
+PhpCode: Code PHP
+Database: Base de données
+'Test:': 'Test :'
+"No": Non
+Cancel: Annuler
+"Yes": Oui
+Folder name ?: Nom du dossier ?
+File name ?: Nom du fichier ?
+job:
+  one: tâche
+  other: tâches
+lang:
+  one: langue
+  other: langues
+server:
+  one: serveur
+  other: serveurs
+plugins paths:
+  one: plugins path
+  other: plugins paths
+plugin:
+  one: plugin
+  other: plugins
+project:
+  one: projet
+  other: projets
+Projects: Projets

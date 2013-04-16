@@ -1,0 +1,75 @@
+Database:
+  id: Id
+  name: Nom
+  host: Host
+  port: Port
+  user: Utilisateur
+  password: Mot de passe
+Deployment:
+  id: Id
+  server_id: Serveur
+  project_id: Projet
+  server_core_id: Core utilisé
+  path: Chemin
+  base_url: Url de départ
+  ssh: Ssh
+EMCategory:
+  help_category_id: Aide catégorie
+  name: Nom
+  parent_category_id: Catégorie parente
+  url: Url
+EMTopic:
+  help_topic_id: Aide sujet
+Plugin:
+  id: Id
+  name: Nom
+  folder_name: Nom du dossier
+  plugin_path_id: Chemin du plugin
+PluginDeployment:
+  id: Id
+  server_id: Serveur
+  plugin_id: Plugin
+  server_core_id: Serveur CORE
+PluginPath:
+  id: Id
+  name: Nom
+  path: Chemin
+PluginPathDeployment:
+  id: Id
+  server_id: Serveur
+  plugin_path_id: Plugin path
+  folder_name: Nom du dossier
+PluginProject:
+  plugin_id: Plugin
+  project_id: Projet
+Project:
+  id: Id
+  name: Nom
+  path: Chemin
+ProjectLang:
+  name: Nom
+  project_id: Id du projet
+Server:
+  id: Id
+  name: Nom
+  host: Nom de l'hôte
+  user: Utilisateur
+  pwd: Mot de passe
+  projects_dir: Répertoire des projets
+  plugins_dir: Répertoire des plugins
+  core_dir: Répertoire du core
+  env_name: Nom de l'environnement
+ServerCore:
+  id: Id
+  server_id: Id serveur
+  version: Version
+  path: Chemin
+ServerCron:
+  server_id: Id serveur
+  deployment_id: Id du déploiement
+  value: Valeur
+Workspace:
+  id: Id
+  name: Nom
+  projects_dir: Répertoire des projets
+  db_name: Nom de la base de données

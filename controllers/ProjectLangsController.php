@@ -1,4 +1,5 @@
 <?php
+exit('TODO : edit yaml files');
 Controller::$defaultLayout='project';
 class ProjectLangsController extends AController{
 	/** @Required('id') */
