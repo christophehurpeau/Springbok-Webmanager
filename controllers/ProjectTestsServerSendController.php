@@ -14,7 +14,7 @@ class ProjectTestsServerSendController extends SControllerServerSentEvents{
 		$httpClient=new CHttpClient;
 		$httpClient->doNotfollowRedirects();
 		
-		$baseurl=$project->entryBaseUrl($env,$entry);
+		$baseurl=str_replace('HTTP_OR_HTTPS','http',$project->entryBaseUrl($env,$entry));
 		
 		foreach($tests as $i=>$test){
 			try{

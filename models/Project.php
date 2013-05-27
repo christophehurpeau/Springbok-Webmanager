@@ -58,7 +58,7 @@ class Project extends SSqlModel{
 	}
 	public function envConfig($env){
 		$conf=$this->path().'/src/config/_'.$env.'.';
-		return file_exists($conf.'json') ? UFile::getJSON($conf.'json') : include $conf.'php';
+		return file_exists($conf.'yml') ? UFile::getYAML($conf.'yml') : include $conf.'php';
 	}
 	
 	public function entryBaseUrl($env,$entry){

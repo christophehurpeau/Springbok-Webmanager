@@ -18,7 +18,7 @@ class ProjectTestsController extends AController{
 		unset($environments[0]);
 		$environments=array_map(function($e) use($lenConfigPath){return substr($e,$lenConfigPath+1,-4); },$environments);
 		
-		set('envBaseUrl',$project->entryBaseUrl($env,$entry));
+		set('envBaseUrl',str_replace('HTTP_OR_HTTPS','http',$project->entryBaseUrl($env,$entry)));
 		
 		mset($project,$tests,$entries,$entry,$environments,$env);
 		render();
