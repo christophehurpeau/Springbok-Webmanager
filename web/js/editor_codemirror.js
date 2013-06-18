@@ -1,9 +1,9 @@
 //include Lib('jquery.filetree');
 
-var editor,hlLine,currentFile,modes,hasCtrlKey=false,lastSaveHistorySize=0,waitingFunction,dialogs,baseurl;
+var editor,hlLine,currentFile,modes,hasCtrlKey=false,lastSaveHistorySize=0,waitingFunction,dialogs,baseUrl;
 
 $(document).ready(function(){
-	baseurl=basedir+'editor/'+projectId+'/'+projectType;
+	baseUrl=baseUrl+'editor/'+projectId+'/'+projectType;
 	dialogs={
 		saveFile:$('#dialog-ask-save-file').dialog({autoOpen:false,resizable:false,height:170,modal:true,buttons:[
 			{text:_t('No'),click:function(){$(this).dialog('close');waitingFunction()}},
@@ -42,7 +42,7 @@ $(document).ready(function(){
 	$('#projectName').contextMenu({ menu:'projectMenu'},function(action, el, pos){
 		if(action==='folder_add'){
 			var folderName=prompt(_t('Folder name ?'));
-			if(folderName) $.post(baseurl+'FolderAdd',{folderName:folderName},function(){loadFileTree();});
+			if(folderName) $.post(baseUrl+'FolderAdd',{folderName:folderName},function(){loadFileTree();});
 		}
 	});
 
@@ -54,21 +54,21 @@ $(document).ready(function(){
 /* EDITOR FUNCTIONS */
 function loadFileTree(){
 	$('#fileTree').fileTree({
-		script:baseurl+'FileTree',
+		script:baseUrl+'FileTree',
 		onFolderExpanded:function($f){
 			$f.find(".jqueryFileTree li.directory").contextMenu({ menu:'folderMenu'},function(action, el, pos){
 				if(action==='file_add'){
 					var fileName=prompt(_t('File name ?'));//Attachment.php
 					if(fileName){
 						var aFolder=el.find('a:first');
-						$.post(baseurl+'FileAdd',{dir:aFolder.attr('rel'),fileName:fileName},function(){el.hasClass('collapsed')?aFolder.click():aFolder.click().delay(50).click();});
+						$.post(baseUrl+'FileAdd',{dir:aFolder.attr('rel'),fileName:fileName},function(){el.hasClass('collapsed')?aFolder.click():aFolder.click().delay(50).click();});
 					}
 				}
 			});
 		}
 	},function(file){
 		waitingFunction=function(){
-			$.post(baseurl+'FileContent',{file:file},function(data){
+			$.post(baseUrl+'FileContent',{file:file},function(data){
 				lastSaveHistorySize=0;
 				currentFile=file;
 				var idxExt=file.lastIndexOf(".")+1;ext=idxExt>1?file.substring(idxExt).toLowerCase():false;
@@ -98,7 +98,7 @@ function loadFileTree(){
 function saveFile(afterSave){
 	if(currentFile){
 		lastSaveHistorySize=editor.historySize().undo;
-		$.post(baseurl+'SaveFileContent',{file:currentFile,content:editor.getValue()},afterSave);
+		$.post(baseUrl+'SaveFileContent',{file:currentFile,content:editor.getValue()},afterSave);
 	}else{
 		alert('no current file');
 		afterSave();

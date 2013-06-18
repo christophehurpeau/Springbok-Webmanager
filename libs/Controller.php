@@ -21,10 +21,10 @@ class AController extends Controller{
 		self::$workspace=CSession::get('workspace');
 		SSqlModel::$__dbName=self::$workspace->db_name;
 		SSqlModel::$__modelDb=DB::init(SSqlModel::$__dbName);
-		/* DEV */
+		/*#if DEV */
 		class_exists('UFile',true);
 		$schemaProcessing=new DBSchemaProcessing(new Folder(APP.'models'),new Folder(APP.'triggers'));
-		/* /DEV */
+		/*#/if */
 	}
 	
 	/**

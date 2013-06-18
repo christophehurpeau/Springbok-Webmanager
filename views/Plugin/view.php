@@ -41,7 +41,7 @@
 		$( ".sortable" ).sortable({
 			placeholder: "ui-state-highlight",
 			update: function(){
-				$.post(basedir+'plugin/sortProjects/{=$plugin->id}',$(this).sortable("serialize"));
+				$.post(baseUrl+'plugin/sortProjects/{=$plugin->id}',$(this).sortable("serialize"));
 			}
 		}).disableSelection();
 		<? HHtml::jsInlineEnd() ?>

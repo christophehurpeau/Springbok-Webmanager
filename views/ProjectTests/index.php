@@ -48,7 +48,7 @@
 			return;
 		}
 		$('#FormTests .resultTest').html('');
-		var evtSource = new EventSource(basedir+"projectTestsServerSend/?id={=$project->id}&entry={=$entry}&env="+$('#SelectEnv').val());
+		var evtSource = new EventSource(baseUrl+"projectTestsServerSend/?id={=$project->id}&entry={=$entry}&env="+$('#SelectEnv').val());
 		evtSource.onmessage = function(m){
 			var data=$.parseJSON(m.data),tr=$('#tr'+data.i);
 			tr.children('td:eq(4)').html('<span class="icon '+(data.success?'tick':'cross')+'"></span> '+data.status);

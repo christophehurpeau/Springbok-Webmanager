@@ -14,11 +14,11 @@ class ProjectTestsServerSendController extends SControllerServerSentEvents{
 		$httpClient=new CHttpClient;
 		$httpClient->doNotfollowRedirects();
 		
-		$baseurl=str_replace('HTTP_OR_HTTPS','http',$project->entryBaseUrl($env,$entry));
+		$baseUrl=str_replace('HTTP_OR_HTTPS','http',$project->entryBaseUrl($env,$entry));
 		
 		foreach($tests as $i=>$test){
 			try{
-				$httpClient->get($baseurl.ltrim($test['url'],'/').(strpos($test['url'],'?')===false?'?':'&').'springbokNoEnhance=true&springbokNoDevBar=true');
+				$httpClient->get($baseUrl.ltrim($test['url'],'/').(strpos($test['url'],'?')===false?'?':'&').'springbokNoEnhance=true&springbokNoDevBar=true');
 			}catch(HttpClientError $hce){}
 			$status=$httpClient->getStatus();
 			

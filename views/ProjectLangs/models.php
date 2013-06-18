@@ -20,6 +20,6 @@
 </div>
 {jsReady}
 {f $allStrings as $modelName=>$modelStrings}
-	$("#FormLangsModels_{$modelName}").ajaxForm(basedir+"projectLangs/modelsSave/{=$project->id}/{$lang}/{$modelName}");
+	$("#FormLangsModels_{$modelName}").ajaxForm(baseUrl+"projectLangs/modelsSave/{=$project->id}/{$lang}/{$modelName}");
 {/f}
 {/jsReady}

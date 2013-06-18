@@ -23,7 +23,7 @@
 			connectWith: ".connectedSortable",
 			update: function(){
 				var rel=$(this).attr("rel");
-				if(rel) $.post(basedir+'projectAcls/sort/{=$project->id}/'+rel,$(this).sortable("serialize"));
+				if(rel) $.post(baseUrl+'projectAcls/sort/{=$project->id}/'+rel,$(this).sortable("serialize"));
 			}
 		}).disableSelection();
 	});

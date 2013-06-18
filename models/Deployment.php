@@ -154,11 +154,11 @@ include CORE.'cli.php';");
 			if(file_exists($filename=$projectPath.'web/js/'.$jsfilename)){
 				$jsFile=file($filename);
 				$resp->push('First line : '.$jsfilename."\n".$jsFile[0]);
-				$line0="'use strict';var basedir='".$this->base_url."',staticUrl=basedir+'web/',webUrl=staticUrl+'".$webFolder."/',imgUrl=webUrl+'img/',version='".$webFolder."'";
+				$line0="'use strict';var baseUrl='".$this->base_url."',staticUrl=baseUrl+'web/',webUrl=staticUrl+'".$webFolder."/',imgUrl=webUrl+'img/',version='".$webFolder."'";
 				if($jsfilename==='admin.js') $line0.=',entryUrl='.json_encode($envConfig['siteUrl'],JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
 				$line0.=";\n";
 				if($jsFile[0]!=$line0){
-					$jsFile[0]=substr($jsFile[0],0,12)==='var basedir='||substr($jsFile[0],0,12+13)==="'use strict';var basedir=" ? $line0 : $line0.$jsFile[0];
+					$jsFile[0]=substr($jsFile[0],0,12)==='var baseUrl='||substr($jsFile[0],0,12+13)==="'use strict';var baseUrl=" ? $line0 : $line0.$jsFile[0];
 					file_put_contents($filename,implode('',$jsFile));
 				}
 			}
@@ -203,7 +203,13 @@ include CORE.'cli.php';");
 		//$resp->push('Delete CACHE files'.PHP_EOL
 		//	.UExec::exec('cd '.escapeshellarg($target.'data/').' && rm -f cache/* ; rm -f cache/*/* ; rm -f elementsCache/* ; rm -f elementsCache/*/*',$options['ssh']));
 		
+		$deleteCache='cd '.escapeshellarg($target.'data/').' && find cache/ -type f -delete ; find elementsCache/ -type f -delete -name "*_view"';
+		
+		//if($stopProject) $resp->push('Delete CACHE files'.PHP_EOL.UExec::exec($deleteCache,$options['ssh']));
+		
 		if(!$projectStopBeforeDbEvolution && $shemaProcessSuccess) $resp->push($this->start($scPath,$webFolder,$isPhp5_4));
+		
+		//if(!$stopProject) $resp->push('Delete CACHE files'.PHP_EOL.UExec::exec($deleteCache,$options['ssh']));
 		
 		if(!$projectStopBeforeDbEvolution)
 			UExec::exec('cd / && echo '.escapeshellarg($webFolder).' > '.escapeshellarg($target.'lastWebFolder'),$sshOptions);

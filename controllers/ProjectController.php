@@ -26,7 +26,7 @@ class ProjectController extends AController{
 		else self::redirect('/project/view/'.$id);
 		exit;
 		
-		/* PROD */include dirname(CORE).'/dev/enhancers/EnhanceApp.php';/* /PROD */
+		/*#if PROD*/include dirname(CORE).'/dev/enhancers/EnhanceApp.php';/*#/if*/
 		$f=new Folder($projectPath.DS.'tmp'); if($f->exists()) $f->delete();
 		$instance=new EnhanceApp($projectPath);
 		$res=$instance->process(true);

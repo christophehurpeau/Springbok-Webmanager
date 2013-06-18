@@ -38,7 +38,7 @@ window.onload = function() {
 		},
 		exec: function(){
 			if(currentFile)
-				$.post(basedir+'projectEditor/saveFileContent/'+projectId,{file:currentFile,content:editor.getSession().doc.getValue()});
+				$.post(baseUrl+'projectEditor/saveFileContent/'+projectId,{file:currentFile,content:editor.getSession().doc.getValue()});
 			else alert('no current file');
 		}
 	});
@@ -47,7 +47,7 @@ window.onload = function() {
 
 $(document).ready(function(){
 	$('#fileTree').fileTree({
-			script:basedir+'projectEditor/fileTree/'+projectId,
+			script:baseUrl+'projectEditor/fileTree/'+projectId,
 			onFolderExpanded:function($f){
 				$f.find(".jqueryFileTree li.directory").contextMenu({ menu:'folderMenu'},function(action, el, pos){
 					switch (action){
@@ -64,7 +64,7 @@ $(document).ready(function(){
 				});
 			}
 	  },function(file){ 
-		$.post(basedir+'projectEditor/fileContent/'+projectId,{file:file},function(data){
+		$.post(baseUrl+'projectEditor/fileContent/'+projectId,{file:file},function(data){
 			currentFile=file;
 			var idxExt=file.lastIndexOf(".")+1;ext=idxExt>1?file.substring(idxExt).toLowerCase():false;
 			
