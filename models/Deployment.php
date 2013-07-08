@@ -105,13 +105,13 @@ include CORE.'cli.php';";
 					foreach($deploymentConfig['slaves'] as $slave){
 						//http://www.ovh.com/soapi/fr/?method=dedicatedFailoverUpdate
 						foreach($slave['failovers'] as $failover){
-							if(CSimpleHttpClient::get($failover['ip'].':3000/ip.txt')===$deploymentConfig['master']['ip']) continue; //already in master
+							if(CSimpleHttpClient::get($failover.':3000/ip.txt')===$deploymentConfig['master']['ip']) continue; //already in master
 							$ok=false;
 							while($ok===false){
 								$ok=true;
 								try{
-									$soap->dedicatedFailoverUpdate($session,$failover['hostname'],$failover['ip'],$deploymentConfig['master']['ip']);
-									$resp->push('Failover: '.$failover['ip'].' to '.$deploymentConfig['master']['ip']);
+									$soap->dedicatedFailoverUpdate($session,$slave['hostname'],$failover,$deploymentConfig['master']['ip']);
+									$resp->push('Failover: '.$failover.' to '.$deploymentConfig['master']['ip']);
 								}catch(SoapFault $fault){
 									$resp->push($fault->faultcode);
 									$resp->push($fault->faultstring);
@@ -137,11 +137,11 @@ include CORE.'cli.php';";
 				foreach($deploymentConfig['slaves'] as $slave){
 					foreach($slave['failovers'] as $failover){
 						while(true){
-							$response=CSimpleHttpClient::get($failover['ip'].':3000/ip.txt');
-							$resp->push($failover['ip'].' ==> '.$response);
+							$response=CSimpleHttpClient::get($failover.':3000/ip.txt');
 							if($response===$deploymentConfig['master']['ip']) break;
 							usleep(50);
 						}
+						$resp->push($failover.' ==> '.$response);
 					}
 				}
 			}
@@ -329,8 +329,8 @@ include CORE.'cli.php';");
 					foreach($deploymentConfig['slaves'] as $slave){
 						//http://www.ovh.com/soapi/fr/?method=dedicatedFailoverUpdate
 						foreach($slave['failovers'] as $failover){
-							$soap->dedicatedFailoverUpdate($session,$deploymentConfig['master']['hostname'],$failover['ip'],$slave['ip']);
-							$resp->push('Failover: '.$failover['ip'].' to '.$slave['ip']);
+							$soap->dedicatedFailoverUpdate($session,$deploymentConfig['master']['hostname'],$failover,$slave['ip']);
+							$resp->push('Failover: '.$failover.' to '.$slave['ip']);
 						}
 					}
 					
