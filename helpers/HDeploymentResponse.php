@@ -7,6 +7,7 @@ class AHDeploymentResponse{
 	}
 	
 	public function push($message){
+		$message=date('\[H:i:s\] ').$message;
 		CLogger::get('AHDeplResp')->log($message);
 		if($this->response !== null){
 			$this->response->data($message);

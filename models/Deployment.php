@@ -47,6 +47,7 @@ class Deployment extends SSqlModel{
 		$projectPath=$this->getProjectPath();
 		$entries=$this->project->entries();
 		$envConfig=$this->project->envConfig($this->env_name);
+		$deploymentConfig=$this->project->deploymentConfig($this->server->name);
 		$target=rtrim($this->path(),'/').DS;
 		
 		$resp->push('Hi ! Deployment : '.$projectBasePath.' ===> '.$this->server->host.':'.$target);
@@ -89,6 +90,64 @@ include CORE.'cli.php';";
 							|| $projectStopBeforeDbEvolution;
 		$resp->push('stop : '.($stopProject?'true':'false'));
 		
+		
+		/* SLAVES - REPLICATION */
+		if($deploymentConfig){
+			$resp->push('Slaves: '.(empty($deploymentConfig['slaves'])?'empty':count($deploymentConfig['slaves'])));
+			if(!empty($deploymentConfig['slaves'])){
+				try{
+					$soap = new SoapClient("https://www.ovh.com/soapi/soapi-re-1.59.wsdl");
+					
+					//login
+					$session = $soap->login($deploymentConfig['ovh-nic'],$deploymentConfig['ovh-password'],'fr',false);
+					$resp->push('=> OVH: login successfull');
+					
+					foreach($deploymentConfig['slaves'] as $slave){
+						//http://www.ovh.com/soapi/fr/?method=dedicatedFailoverUpdate
+						foreach($slave['failovers'] as $failover){
+							if(CSimpleHttpClient::get($failover['ip'].':3000/ip.txt')===$deploymentConfig['master']['ip']) continue; //already in master
+							$ok=false;
+							while($ok===false){
+								$ok=true;
+								try{
+									$soap->dedicatedFailoverUpdate($session,$failover['hostname'],$failover['ip'],$deploymentConfig['master']['ip']);
+									$resp->push('Failover: '.$failover['ip'].' to '.$deploymentConfig['master']['ip']);
+								}catch(SoapFault $fault){
+									$resp->push($fault->faultcode);
+									$resp->push($fault->faultstring);
+									if(false){
+									}else throw $fault;
+								}
+							}
+						}
+					}
+					
+					//logout
+					$soap->logout($session);
+					$resp->push('=> OVH: logout successfull');
+
+				}catch(SoapFault $fault){
+					$resp->push('=> FAULT OVH'.PHP_EOL
+							.$fault);
+					return false;
+					
+				}
+				//TODO : do that after deployed core (this can leave some time)
+				//wait for all slave to go to the master
+				foreach($deploymentConfig['slaves'] as $slave){
+					foreach($slave['failovers'] as $failover){
+						while(true){
+							$response=CSimpleHttpClient::get($failover['ip'].':3000/ip.txt');
+							$resp->push($failover['ip'].' ==> '.$response);
+							if($response===$deploymentConfig['master']['ip']) break;
+							usleep(50);
+						}
+					}
+				}
+			}
+		}
+		
+		
 		/* DEPLOY CORE */
 		$scPath=$this->server->deployCore($this,$resp,$simulation);
 		if($scPath===false) return;
@@ -106,7 +165,11 @@ include CORE.'cli.php';";
 		}
 		
 		$baseDefine=$this->baseDefine($scPath,$isPhp5_4);
-
+		
+		
+		/* -- -- -- */
+		
+		
 		
 		/* -- -- -- */
 		
@@ -249,6 +312,42 @@ include CORE.'cli.php';");
 			$this->server->removeOldCores($resp);
 		
 		}else $this->server->removeBlockFile();
+		
+		/* SLAVES - REPLICATION */
+		if($deploymentConfig){
+			if(!empty($deploymentConfig['slaves'])){
+				//rsync how to check it's done ?
+				$resp->push('Sleeping for 2 minutes...');
+				sleep(2*60);
+				try{
+					$soap = new SoapClient("https://www.ovh.com/soapi/soapi-re-1.59.wsdl");
+					
+					//login
+					$session = $soap->login($deploymentConfig['ovh-nic'],$deploymentConfig['ovh-password'],'fr',false);
+					$resp->push('=> OVH: login successfull');
+					
+					foreach($deploymentConfig['slaves'] as $slave){
+						//http://www.ovh.com/soapi/fr/?method=dedicatedFailoverUpdate
+						foreach($slave['failovers'] as $failover){
+							$soap->dedicatedFailoverUpdate($session,$deploymentConfig['master']['hostname'],$failover['ip'],$slave['ip']);
+							$resp->push('Failover: '.$failover['ip'].' to '.$slave['ip']);
+						}
+					}
+					
+					//logout
+					$soap->logout($session);
+					$resp->push('=> OVH: logout successfull');
+
+				}catch(SoapFault $fault){
+					$resp->push('=> FAULT OVH'.PHP_EOL
+							.$fault);
+					return false;
+					
+				}
+				$resp->push('Failovers updated');
+				//no need to wait
+			}
+		}
 		
 		$this->stopDaemon($workspaceId);
 		

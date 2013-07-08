@@ -60,6 +60,14 @@ class Project extends SSqlModel{
 		$conf=$this->path().'/src/config/_'.$env.'.';
 		return file_exists($conf.'yml') ? UFile::getYAML($conf.'yml') : include $conf.'php';
 	}
+	public function deploymentConfig($serverName){
+		$conf=$this->path().'/src/config/deployments.yml';
+		if(!file_exists($conf)) return null;
+		$conf=UFile::getYAML($conf);
+		if(isset($conf[$serverName]))
+			return $conf[$serverName];
+		return null;
+	}
 	
 	public function entryBaseUrl($env,$entry){
 		$envConfig=$this->envConfig($env);
