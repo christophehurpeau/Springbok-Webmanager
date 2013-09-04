@@ -14,6 +14,12 @@ var list=$('#deployList');
 			alert('Votre navigateur n\'est pas compatible avec EventSource');
 			return;
 		}
+		// capture F5
+		var fnCaptureF5;
+		$(document).on('keypress',fnCaptureF5=function(e){
+			if(e.keyCode==116) return false;
+		});
+		
 		var evtSource = new EventSource(baseUrl+"projectDeploymentServerSend/deploy/{=$deployment->id}{if isset($_REQUEST['projectStop']) && $_REQUEST['projectStop']=='1'}?projectStop=1{elseif isset($_REQUEST['projectStopBeforeDbEvolution']) && $_REQUEST['projectStopBeforeDbEvolution']=='1'}?projectStopBeforeDbEvolution=1{/if}");
 		evtSource.onmessage = function(m){
 			var content=$('<li class="content"/>');
@@ -24,6 +30,7 @@ var list=$('#deployList');
 		};
 		evtSource.addEventListener('close',function(){
 			evtSource.close();
+			$(document).off('keypress',fnCaptureF5);
 		});
 {if $confirm}
 	},function(){

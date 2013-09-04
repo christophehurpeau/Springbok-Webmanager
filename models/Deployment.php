@@ -47,7 +47,7 @@ class Deployment extends SSqlModel{
 		$projectPath=$this->getProjectPath();
 		$entries=$this->project->entries();
 		$envConfig=$this->project->envConfig($this->env_name);
-		$deploymentConfig=$this->project->deploymentConfig($this->server->name);
+		$deploymentConfig=$this->project->deploymentConfig($this->server->host);
 		$target=rtrim($this->path(),'/').DS;
 		
 		$resp->push('Hi ! Deployment : '.$projectBasePath.' ===> '.$this->server->host.':'.$target);
@@ -115,7 +115,10 @@ include CORE.'cli.php';";
 								}catch(SoapFault $fault){
 									$resp->push($fault->faultcode);
 									$resp->push($fault->faultstring);
-									if(false){
+									if($fault->faultstring==='Action already done'){
+										//$ok=true;
+										throw $fault;
+										//the hostname of the server is probably wrong ?
 									}else throw $fault;
 								}
 							}
@@ -302,7 +305,7 @@ include CORE.'cli.php';");
 			}
 		}
 		
-		if(!$projectStopBeforeDbEvolution){
+		if(!$projectStopBeforeDbEvolution && $shemaProcessSuccess){
 			if(file_exists($jobFilePath=$projectPath.'jobs/AfterDeployJob.php')){
 				$resp->push('EXECUTE job AfterDeploy'.PHP_EOL
 					.UExec::exec('php '.escapeshellarg($target.'job.php').' AfterDeploy',$options['ssh']+array('forcePseudoTty'=>true)));
@@ -314,7 +317,7 @@ include CORE.'cli.php';");
 		}else $this->server->removeBlockFile();
 		
 		/* SLAVES - REPLICATION */
-		if($deploymentConfig){
+		if($deploymentConfig && $shemaProcessSuccess){
 			if(!empty($deploymentConfig['slaves'])){
 				//rsync how to check it's done ?
 				$resp->push('Sleeping for 2 minutes...');

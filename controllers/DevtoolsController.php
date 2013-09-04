@@ -24,4 +24,5 @@ class DevtoolsController extends Controller{
 	}
 	
 	/* @SimpleAction('css') */
+	/* @SimpleAction('stringCompare') */
 }
