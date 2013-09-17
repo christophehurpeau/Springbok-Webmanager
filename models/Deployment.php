@@ -277,8 +277,7 @@ include CORE.'cli.php';");
 		
 		//if(!$stopProject) $resp->push('Delete CACHE files'.PHP_EOL.UExec::exec($deleteCache,$options['ssh']));
 		
-		if(!$projectStopBeforeDbEvolution)
-			UExec::exec('cd / && echo '.escapeshellarg($webFolder).' > '.escapeshellarg($target.'lastWebFolder'),$sshOptions);
+		UExec::exec('cd / && echo '.escapeshellarg($webFolder).' > '.escapeshellarg($target.'lastWebFolder'),$sshOptions);
 		
 		
 		/* UPDATE CRON */
