@@ -15,7 +15,7 @@ $action=array_shift($argv);'."
 include CORE.'cli.php';");
 
 mkdir($webmanagerDir.'config');
-echo shell_exec('cd '.escapeshellarg($webmanagerDir).'src && ln -s ../config && cd .. && ln -s src/db');
+echo shell_exec('cd '.escapeshellarg($webmanagerDir).'src && ln -s ../config');
 
 $env=include $baseDir.'core/env.php';
 
