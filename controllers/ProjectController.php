@@ -141,7 +141,7 @@ include CORE.'cli.php';";
 					."\n\t'db'=>array(\n\t\t'default'=>array(\n\t\t\t\n\t\t\t'user'=>'root','password'=>'root'\n\t\t),\n\t),'generate'=>array('default'=>true)\n\t\n);");
 			file_put_contents($dir.'routes.php',"<?"."php return array(\n\t'/favicon'=>array('Site::favicon','ext'=>'[a-z]+'),\n\t'/'=>array('Site::index'),"
 				."\n\t'/:controller(/:action/*)?'=>array('Site::index'),\n);");
-			file_put_contents($dir.'routes-langs.php',"<?"."php return NULL;");
+			file_put_contents($dir.'routes-langs.php',"<?"."php return array();");
 			file_put_contents($dir.'cookies.php',"<?"."php return array();");
 			file_put_contents($dir.'secure.php',"<?"."php return array(\n\t'url_login'=>'/site/login', 'url_redirect'=>'/',\n\t\n);");
 			file_put_contents($dir.'enhance.php',"<?"."php return array(\n\t'base'=>array('i18n'),\n\t'includes'=>array(\n\t\t\n\t)\n);");
@@ -174,7 +174,7 @@ include CORE.'cli.php';";
 				."\n</div>");
 			mkdir($dir=$projectPath.'web/');
 			mkdir($dir2=$dir.'css/');
-			file_put_contents($dir2.'main.scss',"\$PAGE_FIXED:false;\n@includeCore 'colors/darkblue';\n@includeCore 'default';");
+			file_put_contents($dir2.'main.scss',"\$PAGE_FIXED:false;\$PAGE_VERSION:2;\n@includeCore 'colors/darkblue';\n@includeCore 'default';");
 			mkdir($dir.'img/');
 			mkdir($dir.'js/');
 		}
