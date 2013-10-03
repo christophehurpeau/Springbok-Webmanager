@@ -10,7 +10,7 @@ class ProjectController extends AController{
 	/** @ValidParams
 	* id > @Required
 	*/ function view(int $id){
-		$project=Project::ById($id)->notFoundIfFalse();
+		$project=Project::ById($id)->mustFetch();
 		$project->openGit();
 		mset($project);
 		render();
@@ -19,7 +19,7 @@ class ProjectController extends AController{
 	/** @ValidParams
 	* id > @Required
 	*/ function enhance(int $id){
-		$project=Project::ById($id)->notFoundIfFalse();
+		$project=Project::ById($id)->mustFetch();
 		$project->checkCli();
 		$res=UExec::exec('php '.escapeshellarg($project->path().'/cli.php').' enhance');
 		if(!empty($res)) debugCode($res);
@@ -60,7 +60,7 @@ include CORE.'cli.php';";
 	/** @ValidParams
 	* id > @Required
 	*/ function start_prod(int $id){
-		$project=Project::ById($id)->notFoundIfFalse();
+		$project=Project::ById($id)->mustFetch();
 		$projectPath=self::$workspace->projects_dir.$project->path.'/prod/'.DS;
 		
 		$baseDefine="<?php
@@ -137,7 +137,7 @@ include CORE.'cli.php';";
 				."\n\t'projectName'=>'".$projectName."',\n\t'availableLangs'=>array('fr'),\n"
 				."\n\t'secure'=>array('crypt_key'=>'".str_replace("'",'0',uniqid('',true))."',)"
 				."\n);");
-			file_put_contents($dir.'_'.ENV.'.php',"<?"."php return array(\n\t'siteUrl'=>array('index'=>'http://localhost/'),"
+			file_put_contents($dir.'_'.ENV.'.php',"<?"."php return array(\n\t'minCoreVersion'=>4,\n\n\t'siteUrl'=>array('index'=>'http://localhost/'),"
 					."\n\t'db'=>array(\n\t\t'default'=>array(\n\t\t\t\n\t\t\t'user'=>'root','password'=>'root'\n\t\t),\n\t),'generate'=>array('default'=>true)\n\t\n);");
 			file_put_contents($dir.'routes.php',"<?"."php return array(\n\t'/favicon'=>array('Site::favicon','ext'=>'[a-z]+'),\n\t'/'=>array('Site::index'),"
 				."\n\t'/:controller(/:action/*)?'=>array('Site::index'),\n);");
@@ -183,7 +183,7 @@ include CORE.'cli.php';";
 	/** @ValidParams
 	* id > @Required
 	*/ function createStructure(int $id){
-		$project=Project::ById($id)->notFoundIfFalse();
+		$project=Project::ById($id)->mustFetch();
 		$projectPath=self::$workspace->projects_dir.$project->path.DS.'src'.DS;
 		self::_createStructure($projectPath,$project->name);
 		self::redirect('/project/view/'.$id);
@@ -200,7 +200,7 @@ include CORE.'cli.php';";
 	 * id > @Required
 	 */
 	static function jobs(int $id){
-		$project=Project::ById($id)->notFoundIfFalse();
+		$project=Project::ById($id)->mustFetch();
 		mset($project);
 		set('jobs',file_exists($filename=$project->path().DS.'dev/config/jobs.php') ? include $filename : false);
 		render();
@@ -211,7 +211,7 @@ include CORE.'cli.php';";
 	 * name > @Required
 	 */
 	static function job_execute(int $id,$name){
-		$project=Project::ById($id)->notFoundIfFalse();
+		$project=Project::ById($id)->mustFetch();
 		$jobs=include $project->path().DS.'dev/config/jobs.php';
 		if(!isset($jobs[$name])) notFound();
 		/*if(!CHttpRequest::isPOST()) render('job_confirm');*/
