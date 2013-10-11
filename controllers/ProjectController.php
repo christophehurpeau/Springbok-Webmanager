@@ -164,7 +164,7 @@ include CORE.'cli.php';";
 			
 			file_put_contents($dir.'page.php',"<?php new AjaxBaseView(".'$layout_title'.") ?>"
 				."\n<header>\n\t<div id=\"logo\">".$projectName."</div>\n\t{menuTop 'startsWith':true"
-				."\n\t\t_tC('Home'):false,\n"."\t}"
+				."\n\t\t_tC('Home'):'/',\n"."\t}"
 				."\n</header>\n".'{=$layout_content}'
 				."\n<footer>Version du <b><? HHtml::enhanceDate() ?></b> | <? HHtml::powered() ?></footer>");
 			file_put_contents($dir.'default.php',"<?php new AjaxPageView(".'$layout_title'.") ?>"
